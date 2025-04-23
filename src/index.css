@@ -1,0 +1,136 @@
+/* src/styles/colors.css */
+:root {
+  /* Primary (Neon/Parrot Green) Scale */
+  --primary-100: #bdff00;
+  --primary-200: #88b605;
+  --primary-300: #394a0c;
+  --primary-400: #1f250d;
+  --primary-solid-hover: #a8e600;
+  --primary-inverted-hover: #2a3313;
+
+  /* Secondary (Pinkish) Scale */
+  --secondary-100: #f54667;
+  --secondary-200: #b4354d;
+  --secondary-300: #491b26;
+  --secondary-400: #251419;
+  --secondary-solid-hover: #f42e52;
+  --secondary-inverted-hover: #3a151e;
+
+  /* gray-scale Scale */
+  --gray-scale-100: #ffffff;
+  --gray-scale-200: #aeaeb2;
+  --gray-scale-300: #595b65;
+  --gray-scale-400: #0d0d10;
+
+  --gray-scale-solid-hover: #4a4c54;
+  --gray-scale-inverted-hover: #292a31;
+
+  /* Black Scale */
+  --black-100: #0d0d10;
+  --black-200: #111114;
+  --black-300: #15161a;
+  --black-400: #1e1f24;
+
+  /* Single Color */
+  --single-color: #54f47f;
+  --blue-color: #00c2ff;
+}
+
+.dark {
+  /* Dark Theme Colors */
+  --primary-100: #a0e600; /* Updated Neon color for dark theme */
+  --primary-200: #6ea500;
+  --primary-300: #2d3d06;
+  --primary-400: #142306;
+
+  --secondary-100: #e03556;
+  --secondary-200: #8a2e40;
+  --secondary-300: #3d131b;
+  --secondary-400: #190f13;
+
+  --gray-scale-100: #f0f0f0;
+  --gray-scale-200: #9ca0ab;
+  --gray-scale-300: #4c4e5a;
+  --gray-scale-400: #1a1a1a;
+
+  --black-100: #1a1a1a;
+  --black-200: #1c1c1e;
+  --black-300: #1a1a1e;
+  --black-400: #23242a;
+
+  --single-color: #54f47f; /* Assuming singleColor remains the same */
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
+@layer utilities {
+  .pause-animation {
+    animation-play-state: paused;
+  }
+}
+.scrollbar-x::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-y::-webkit-scrollbar {
+  display: none;
+}
+
+/* dashboard */
+
+.react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top;
+}
+
+.react-grid-item.cssTransforms {
+  transition-property: transform;
+}
+
+.react-grid-item.resizing {
+  z-index: 1;
+  will-change: width, height;
+}
+
+.react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 3;
+  will-change: transform;
+}
+
+.react-grid-item > .react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  background: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pg08IS0tIEdlbmVyYXRvcjogQWRvYmUgRmlyZXdvcmtzIENTNiwgRXhwb3J0IFNWRyBFeHRlbnNpb24gYnkgQWFyb24gQmVhbGwgKGh0dHA6Ly9maXJld29ya3MuYWJlYWxsLmNvbSkgLiBWZXJzaW9uOiAwLjYuMSAgLS0+DTwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DTxzdmcgaWQ9IlVudGl0bGVkLVBhZ2UlMjAxIiB2aWV3Qm94PSIwIDAgNiA2IiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjojZmZmZmZmMDAiIHZlcnNpb249IjEuMSINCXhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbDpzcGFjZT0icHJlc2VydmUiDQl4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjZweCIgaGVpZ2h0PSI2cHgiDT4NCTxnIG9wYWNpdHk9IjAuMzAyIj4NCQk8cGF0aCBkPSJNIDYgNiBMIDAgNiBMIDAgNC4yIEwgNCA0LjIgTCA0LjIgNC4yIEwgNC4yIDAgTCA2IDAgTCA2IDYgTCA2IDYgWiIgZmlsbD0iIzAwMDAwMCIvPg0JPC9nPg08L3N2Zz4=");
+  background-position: bottom right;
+  padding: 0 3px 3px 0;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  box-sizing: border-box;
+  cursor: se-resize;
+}
+
+/* Hide scrollbars while maintaining scroll functionality */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Chrome, Safari and Opera */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide Highcharts scrollbar track but keep the thumb */
+.highcharts-scrollbar-track {
+  display: none;
+}
