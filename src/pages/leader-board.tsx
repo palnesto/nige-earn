@@ -1,7 +1,6 @@
-import React from "react";
 import LeaderBoard from "../components/LeaderBoard/LeaderBoard";
 
-const LeaderBoardPage: React.FC = () => {
+const LeaderBoardPage = () => {
   // Mock users data for the leaderboard
   const users = [
     {

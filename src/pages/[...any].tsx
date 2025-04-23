@@ -9,6 +9,6 @@ export function NotFound() {
   );
 }
 
-export default function NOTFOUNDROUTE() {
+export default function NOT_FOUND_ROUTE() {
   return <NotFound />;
 }

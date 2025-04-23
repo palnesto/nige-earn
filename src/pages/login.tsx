@@ -1,15 +1,13 @@
-import React from "react";
+import Button from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/UI/Button";
-import HomePage from "./HomePage";
 
-const LandingPage: React.FC = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
 
   const handleContinueWithX = () => {
     // Here you would typically handle X authentication
     // For now, we'll just navigate to the home page
-    navigate("/HomePage");
+    navigate("/");
   };
 
   return (
@@ -78,4 +76,4 @@ const LandingPage: React.FC = () => {
   );
 };
 
-export default LandingPage;
+export default LoginPage;
