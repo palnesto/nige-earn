@@ -1,10 +1,7 @@
 import { Suspense } from "react";
-
+import { useRoutes } from "react-router-dom";
+import routes from "~react-pages";
 export function App() {
-  return (
-    <Suspense fallback={<p>Loading...</p>}>
-      {/* <ApplicationFooter>{appRoutes}</ApplicationFooter> */}
-      hello
-    </Suspense>
-  );
+  const appRoutes = useRoutes(routes);
+  return <Suspense fallback={<p>Loading...</p>}>{appRoutes}</Suspense>;
 }
