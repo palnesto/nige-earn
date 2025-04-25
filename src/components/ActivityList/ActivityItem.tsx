@@ -1,4 +1,3 @@
-import React from "react";
 import { ChevronRight } from "lucide-react";
 
 interface ActivityItemProps {
@@ -24,9 +23,9 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
   };
 
   return (
-    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors mb-2">
-      <div className="flex items-center space-x-3">
-        <div className="p-2 rounded-full bg-blue-100 text-blue-600">{icon}</div>
+    <div className="flex items-center justify-between p-4 bg-[#F2F2F2] rounded-full hover:bg-gray-100 transition-colors mb-2">
+      <div className="flex items-center space-x-5">
+        <div>{icon}</div>
 
         <div>
           <p className="font-medium text-gray-800">{activity}</p>

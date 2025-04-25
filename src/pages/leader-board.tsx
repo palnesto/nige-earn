@@ -1,7 +1,6 @@
 import LeaderBoard from "../components/LeaderBoard/LeaderBoard";
 
 const LeaderBoardPage = () => {
-  // Mock users data for the leaderboard
   const users = [
     {
       id: "1",

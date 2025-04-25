@@ -32,6 +32,7 @@
     "clsx": "^2.1.1",
     "country-state-city": "^3.2.1",
     "dayjs": "^1.11.13",
+    "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.5.0",
     "highcharts": "^12.1.2",
     "highcharts-react-official": "^3.2.1",

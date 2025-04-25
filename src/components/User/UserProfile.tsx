@@ -1,21 +1,18 @@
-import React from "react";
-import { Bell } from "lucide-react";
-
 interface UserProfileProps {
   name: string;
   coinBalance: number;
-  profileImage: string;
+  // profileImage: string;
   notifications?: number;
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({
   name,
   coinBalance,
-  profileImage,
+  // profileImage,
   notifications = 0,
 }) => {
   return (
-    <div className="flex items-center justify-between w-full mb-4">
+    <div className="flex items-center justify-between w-full">
       <div className="flex items-center">
         <div>
           <p className="text-gray-500 text-sm">Hello,</p>
@@ -23,28 +20,24 @@ const UserProfile: React.FC<UserProfileProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-1">
-          <span className="font-bold">{coinBalance}</span>
-          <img
-            src="https://via.placeholder.com/20"
-            alt="Coin"
-            className="w-5 h-5 rounded-full"
-          />
+      <div className="flex items-center">
+        <div className="flex items-center">
+          <span className=" ">{coinBalance}</span>
+          <img src="/nigecoin.gif" alt="Coin" className="w-16" />
         </div>
 
-        <div className="relative">
+        {/* <div className="relative">
           <img
             src={profileImage}
             alt={name}
             className="w-8 h-8 rounded-full object-cover"
           />
-        </div>
+        </div> */}
 
         <div className="relative">
-          <Bell size={24} className="text-gray-700" />
+          <img src="/Bell.png" className=" " />
           {notifications > 0 && (
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+            <span className="absolute -top-1 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
               {notifications > 9 ? "9+" : notifications}
             </span>
           )}

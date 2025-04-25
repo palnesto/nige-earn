@@ -1,4 +1,3 @@
-import React from "react";
 import LeaderBoardItem from "./LeaderBoardItem";
 
 interface User {
@@ -19,11 +18,8 @@ const LeaderBoard: React.FC<LeaderBoardProps> = ({ users }) => {
 
   return (
     <div className="p-4">
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-6 mb-6">
-        <h1 className="text-2xl font-bold text-white mb-1">Leader Boards</h1>
-        <p className="text-white opacity-80">
-          Top performers based on coin balance
-        </p>
+      <div className="py-6">
+        <img src="/leader.png" alt="leader" className="w-full" />
       </div>
 
       <div className="space-y-2">

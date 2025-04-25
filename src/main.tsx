@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import "./index.css";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./api/queryClient";
+import { MaxWidthContainer } from "./components/max-width-container";
 
 const app = createRoot(document.getElementById("root")!);
 
@@ -14,7 +15,9 @@ app.render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Toaster />
-        <App />
+        <MaxWidthContainer>
+          <App />
+        </MaxWidthContainer>
       </BrowserRouter>
     </QueryClientProvider>
   </StrictMode>

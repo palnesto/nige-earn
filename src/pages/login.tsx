@@ -1,4 +1,4 @@
-import Button from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
@@ -11,39 +11,43 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-teal-700 to-teal-900 flex flex-col items-center relative overflow-hidden">
+    <div className="min-h-screen bg-[#00857F] flex flex-col items-center relative overflow-hidden">
       {/* Logo Section with Background */}
-      <div className="flex-1 w-full flex flex-col items-center pt-12 relative">
-        <div className="relative mb-4">
-          <img
-            src="/background1.png"
+      <div className="flex-1 w-full flex flex-col items-center justify-between pt-12 relative">
+        <div className="relative pb-4">
+          {/* <img
+            src="/bg1.png"
             alt=""
-            className="absolute inset-0 w-full h-full object-cover -z-10"
-          />
+            className="absolute inset-0 w-full h-full "
+          /> */}
           <div className="flex flex-col items-center gap-2">
-            <img src="/eagle.png" alt="NigeCoin" className="w-24 h-24" />
-            <span className="text-xl font-bold text-white">NigeCoin</span>
+            <img src="/eagle.png" alt="NigeCoin" className="w-24" />
+            <span className="text-2xl font-bold text-white">NigeCoin</span>
           </div>
         </div>
 
-        <div className="relative mb-8">
+        <div className="relative">
           <img
-            src="/hero.png"
+            src="/bg2.png"
             alt=""
-            className="absolute inset-0 w-full h-full object-cover -z-10"
+            className="absolute object-contain md:hidden"
           />
-          <div className="text-center">
-            <img src="/rewards.png" alt="Rewards" className="w-64 mb-2" />
-            <h2 className="text-2xl font-bold text-lime-400 uppercase">
-              PLATFORM
-            </h2>
+          <div className="flex flex-col items-center pb-4">
+            <img src="/rewards.png" alt="Rewards" className="w-64" />
+            <img src="/Platform.png" alt="Platform" className="w-52 -mt-4" />
           </div>
         </div>
       </div>
 
       {/* Black Bottom Section */}
-      <div className="w-full bg-black bg-opacity-80 rounded-t-[2.5rem] px-6 py-12">
-        <div className="max-w-md mx-auto">
+      <div className="w-full flex items-center justify-center relative">
+        <div className="bg-gradient-to-b from-[#206562 ] via-[#00857F] to-transparent absolute z-10 w-full h-32 top-0" />
+        <img
+          src="/bg2.png"
+          alt="NigeCoin"
+          className="w-full h-full absolute object-cover object-center lg:object-fill lg:object-top hidden md:block"
+        />
+        <div className="w-full md:w-96 bg-black rounded-t-[2.5rem] px-6 py-8 z-10 flex flex-col items-center ">
           <h2 className="text-2xl font-bold text-white mb-3 text-center">
             Sign in for rewards
           </h2>
@@ -52,9 +56,8 @@ const LoginPage = () => {
           </p>
 
           <Button
-            variant="secondary"
-            fullWidth
-            className="mb-4 flex items-center justify-center gap-2"
+            variant="yellow"
+            className="mb-4 gap-2 w-96 md:w-full"
             onClick={handleContinueWithX}
           >
             Continue with{" "}

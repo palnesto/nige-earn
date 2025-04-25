@@ -26,6 +26,9 @@ export default {
         "2xl": "1536px",
         "3xl": "1920px",
       },
+      images: {
+        telegram: "/telegram.png",
+      },
       colors: {
         primary: {
           100: "var(--primary-100)",

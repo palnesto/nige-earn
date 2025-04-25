@@ -1,5 +1,3 @@
-import React from "react";
-
 interface LeaderBoardItemProps {
   rank: number;
   user: {
@@ -11,18 +9,18 @@ interface LeaderBoardItemProps {
 }
 
 const LeaderBoardItem: React.FC<LeaderBoardItemProps> = ({ rank, user }) => {
-  const isTopThree = rank <= 3;
+  const isTopTen = rank <= 10;
 
   return (
     <div
       className={`flex items-center justify-between p-4 ${
-        isTopThree ? "bg-teal-600 text-white" : "bg-white text-gray-800"
+        isTopTen ? "bg-teal-600 text-white" : "bg-white text-gray-800"
       } rounded-lg shadow-sm mb-2`}
     >
       <div className="flex items-center space-x-4">
         <div
           className={`w-8 h-8 flex items-center justify-center font-bold ${
-            isTopThree ? "text-teal-600 bg-white" : "text-white bg-teal-600"
+            isTopTen ? "text-teal-600 bg-white" : "text-white bg-teal-600"
           } rounded-full`}
         >
           {rank}
@@ -39,7 +37,7 @@ const LeaderBoardItem: React.FC<LeaderBoardItemProps> = ({ rank, user }) => {
             <p className="font-medium">{user.name}</p>
             <p
               className={`text-xs ${
-                isTopThree ? "text-teal-100" : "text-gray-500"
+                isTopTen ? "text-teal-100" : "text-gray-500"
               }`}
             >
               @{user.id}

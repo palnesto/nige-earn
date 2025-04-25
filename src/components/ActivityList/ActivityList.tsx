@@ -1,6 +1,4 @@
-import React from "react";
 import ActivityItem from "./ActivityItem";
-import { Share, Heart, AtSign } from "lucide-react";
 
 interface Activity {
   id: string;
@@ -21,22 +19,22 @@ const ActivityList: React.FC<ActivityListProps> = ({ activities }) => {
     switch (activity.type) {
       case "share":
         return {
-          icon: <Share size={18} />,
+          icon: <img src="/telegram.png" alt="" className="w-10" />,
           activity: "Shared A Post",
         };
       case "like":
         return {
-          icon: <Heart size={18} />,
+          icon: <img src="/love.png" alt="" className="w-10" />,
           activity: "Liked A Post",
         };
       case "mention":
         return {
-          icon: <AtSign size={18} />,
+          icon: <img src="/at.png" alt="" className="w-10" />,
           activity: "Mentioned @Nigecoin",
         };
       default:
         return {
-          icon: <Share size={18} />,
+          icon: <img src="/telefram.png" alt="" className="w-10" />,
           activity: "Unknown Activity",
         };
     }

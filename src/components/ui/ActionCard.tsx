@@ -23,7 +23,7 @@ const ActionCard: React.FC<ActionCardProps> = ({
 
   return (
     <div
-      className={`${gradientClasses[gradient]} rounded-xl p-5 text-white min-w-[250px] h-36 flex flex-col justify-between`}
+      className={`${gradientClasses[gradient]} rounded-xl p-5 text-white h-36 flex flex-col justify-between w-full`}
     >
       <div className="flex items-start justify-between">
         <h3 className="font-medium text-sm">{title}</h3>
