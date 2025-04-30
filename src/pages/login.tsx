@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/Button";
-import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const navigate = useNavigate();
-
   const handleContinueWithX = () => {
-    // Here you would typically handle X authentication
-    // For now, we'll just navigate to the home page
-    navigate("/");
+    const BACKEND = import.meta.env.VITE_BACKEND_URL; // e.g. http://localhost:4000
+
+    // Build the URL to your back-end's /auth/start endpoint, carrying
+    // a dynamic returnTo of wherever this front-end is running.
+    const returnTo = window.location.origin; // e.g. http://localhost:5173
+    window.location.href = `${BACKEND}/auth/start/earn?returnTo=${encodeURIComponent(
+      returnTo
+    )}`;
   };
 
   return (

@@ -1,31 +1,30 @@
-import { Suspense, useEffect, useMemo, useState } from "react";
+// src/App.tsx
+import { Suspense, useMemo } from "react";
+import { useRoutes, useLocation } from "react-router-dom";
 import routes from "~react-pages";
-import { useRoutes, useLocation, useNavigate } from "react-router-dom";
 import AppLayout from "./layouts/AppLayout";
+import { PrivateRoute } from "./components/common/private-route";
 
 export function App() {
   const location = useLocation();
-  const [isLoggedIn] = useState<boolean>(true); // dummy to indicate if user is logged in
-
-  const navigate = useNavigate();
   const appRoutes = useRoutes(routes);
-  // Define routes that should not have a layout
-  const noLayoutRoutes = useMemo(() => ["/login", "/signup"], []);
 
-  // Check if the current route matches any of the no-layout routes
-  const isNoLayoutPage = noLayoutRoutes.includes(location.pathname);
+  // Routes that should remain public (no auth, no layout)
+  const publicPaths = useMemo(() => ["/login", "/signup"], []);
 
-  useEffect(() => {
-    if (!isLoggedIn && !noLayoutRoutes.includes(location.pathname)) {
-      navigate("/login");
-    } else if (isLoggedIn && noLayoutRoutes.includes(location.pathname)) {
-      navigate("/");
-    }
-  }, [isLoggedIn, location.pathname, navigate, noLayoutRoutes]);
+  const isPublic = publicPaths.includes(location.pathname);
 
   return (
-    <Suspense fallback={<p>Loading...</p>}>
-      {isNoLayoutPage ? appRoutes : <AppLayout>{appRoutes}</AppLayout>}
+    <Suspense fallback={<p>Loading…</p>}>
+      {isPublic ? (
+        // Public pages render straight
+        appRoutes
+      ) : (
+        // All other pages are wrapped in PrivateRoute + AppLayout
+        <PrivateRoute>
+          <AppLayout>{appRoutes}</AppLayout>
+        </PrivateRoute>
+      )}
     </Suspense>
   );
 }

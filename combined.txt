@@ -1,0 +1,2161 @@
+
+src/App.tsx
+-----------
+import { Suspense, useEffect, useMemo, useState } from "react";
+import routes from "~react-pages";
+import { useRoutes, useLocation, useNavigate } from "react-router-dom";
+import AppLayout from "./layouts/AppLayout";
+
+export function App() {
+  const location = useLocation();
+  const [isLoggedIn] = useState<boolean>(true); // dummy to indicate if user is logged in
+
+  const navigate = useNavigate();
+  const appRoutes = useRoutes(routes);
+  // Define routes that should not have a layout
+  const noLayoutRoutes = useMemo(() => ["/login", "/signup"], []);
+
+  // Check if the current route matches any of the no-layout routes
+  const isNoLayoutPage = noLayoutRoutes.includes(location.pathname);
+
+  useEffect(() => {
+    if (!isLoggedIn && !noLayoutRoutes.includes(location.pathname)) {
+      navigate("/login");
+    } else if (isLoggedIn && noLayoutRoutes.includes(location.pathname)) {
+      navigate("/");
+    }
+  }, [isLoggedIn, location.pathname, navigate, noLayoutRoutes]);
+
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      {isNoLayoutPage ? appRoutes : <AppLayout>{appRoutes}</AppLayout>}
+    </Suspense>
+  );
+}
+
+
+src/main.tsx
+------------
+import { StrictMode } from "react";
+import { BrowserRouter } from "react-router-dom";
+import { createRoot } from "react-dom/client";
+import { App } from "./App";
+import { Toaster } from "react-hot-toast";
+import "./index.css";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./api/queryClient";
+import { MaxWidthContainer } from "./components/max-width-container";
+
+const app = createRoot(document.getElementById("root")!);
+
+app.render(
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Toaster />
+        <MaxWidthContainer>
+          <App />
+        </MaxWidthContainer>
+      </BrowserRouter>
+    </QueryClientProvider>
+  </StrictMode>
+);
+
+
+src/utils/toast.ts
+------------------
+import toast, { ToastOptions } from "react-hot-toast";
+
+const DEFAULT_TOAST_OPTIONS: ToastOptions = {
+  duration: 3000,
+  position: "top-right",
+  style: {
+    background: "#333",
+    color: "#fff",
+    fontSize: "16px",
+    borderRadius: "8px",
+  },
+};
+
+export const appToast = {
+  success: (message: string, options?: ToastOptions) =>
+    toast.success(message, { ...DEFAULT_TOAST_OPTIONS, ...options }),
+
+  error: (message: string, options?: ToastOptions) =>
+    toast.error(message, { ...DEFAULT_TOAST_OPTIONS, ...options }),
+
+  info: (message: string, options?: ToastOptions) =>
+    toast(message, { ...DEFAULT_TOAST_OPTIONS, ...options }),
+
+  loading: (message: string, options?: ToastOptions) =>
+    toast.loading(message, { ...DEFAULT_TOAST_OPTIONS, ...options }),
+
+  dismiss: () => toast.dismiss(), // Dismiss all toasts
+};
+
+
+src/utils/utils.ts
+------------------
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+
+src/utils/formatter.ts
+----------------------
+export function formatNumber(num: number): string {
+  const suffixes = ["", "K", "M", "B", "T"];
+  if (num === 0) return "0";
+  const absNum = Math.abs(num);
+  if (absNum < 1000) {
+    const truncated = Math.trunc(num * 100000) / 100000;
+    if (truncated % 1 === 0) return truncated.toFixed(0);
+    if ((truncated * 10) % 1 === 0) return truncated.toFixed(1);
+    if ((truncated * 100) % 1 === 0) return truncated.toFixed(2);
+    if ((truncated * 1000) % 1 === 0) return truncated.toFixed(3);
+    if ((truncated * 10000) % 1 === 0) return truncated.toFixed(4);
+    return truncated.toFixed(5);
+  }
+  const suffixIndex = Math.floor(Math.log10(absNum) / 3);
+  const cappedSuffixIndex = Math.min(suffixIndex, suffixes.length - 1);
+  const scaled = num / Math.pow(1000, cappedSuffixIndex);
+  const truncated = Math.trunc(scaled * 100) / 100;
+  if (truncated % 1 === 0)
+    return `${truncated.toFixed(0)}${suffixes[cappedSuffixIndex]}`;
+  if ((truncated * 10) % 1 === 0)
+    return `${truncated.toFixed(1)}${suffixes[cappedSuffixIndex]}`;
+  return `${truncated.toFixed(2)}${suffixes[cappedSuffixIndex]}`;
+}
+
+export function convertToProperCase(inputString: string): string {
+  // Replace underscores with spaces and capitalize the first letter of each word
+  return inputString
+    .replace(/_/g, " ") // Replace underscores with spaces
+    .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letter of each word
+}
+
+
+src/index.css
+-------------
+/* src/styles/colors.css */
+:root {
+  /* Primary (Neon/Parrot Green) Scale */
+  --primary-100: #bdff00;
+  --primary-200: #88b605;
+  --primary-300: #394a0c;
+  --primary-400: #1f250d;
+  --primary-solid-hover: #a8e600;
+  --primary-inverted-hover: #2a3313;
+
+  /* Secondary (Pinkish) Scale */
+  --secondary-100: #f54667;
+  --secondary-200: #b4354d;
+  --secondary-300: #491b26;
+  --secondary-400: #251419;
+  --secondary-solid-hover: #f42e52;
+  --secondary-inverted-hover: #3a151e;
+
+  /* gray-scale Scale */
+  --gray-scale-100: #ffffff;
+  --gray-scale-200: #aeaeb2;
+  --gray-scale-300: #595b65;
+  --gray-scale-400: #0d0d10;
+
+  --gray-scale-solid-hover: #4a4c54;
+  --gray-scale-inverted-hover: #292a31;
+
+  /* Black Scale */
+  --black-100: #0d0d10;
+  --black-200: #111114;
+  --black-300: #15161a;
+  --black-400: #1e1f24;
+
+  /* Single Color */
+  --single-color: #54f47f;
+  --blue-color: #00c2ff;
+}
+
+.dark {
+  /* Dark Theme Colors */
+  --primary-100: #a0e600; /* Updated Neon color for dark theme */
+  --primary-200: #6ea500;
+  --primary-300: #2d3d06;
+  --primary-400: #142306;
+
+  --secondary-100: #e03556;
+  --secondary-200: #8a2e40;
+  --secondary-300: #3d131b;
+  --secondary-400: #190f13;
+
+  --gray-scale-100: #f0f0f0;
+  --gray-scale-200: #9ca0ab;
+  --gray-scale-300: #4c4e5a;
+  --gray-scale-400: #1a1a1a;
+
+  --black-100: #1a1a1a;
+  --black-200: #1c1c1e;
+  --black-300: #1a1a1e;
+  --black-400: #23242a;
+
+  --single-color: #54f47f; /* Assuming singleColor remains the same */
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
+@layer utilities {
+  .pause-animation {
+    animation-play-state: paused;
+  }
+}
+.scrollbar-x::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-y::-webkit-scrollbar {
+  display: none;
+}
+
+/* dashboard */
+
+.react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top;
+}
+
+.react-grid-item.cssTransforms {
+  transition-property: transform;
+}
+
+.react-grid-item.resizing {
+  z-index: 1;
+  will-change: width, height;
+}
+
+.react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 3;
+  will-change: transform;
+}
+
+.react-grid-item > .react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  background: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pg08IS0tIEdlbmVyYXRvcjogQWRvYmUgRmlyZXdvcmtzIENTNiwgRXhwb3J0IFNWRyBFeHRlbnNpb24gYnkgQWFyb24gQmVhbGwgKGh0dHA6Ly9maXJld29ya3MuYWJlYWxsLmNvbSkgLiBWZXJzaW9uOiAwLjYuMSAgLS0+DTwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DTxzdmcgaWQ9IlVudGl0bGVkLVBhZ2UlMjAxIiB2aWV3Qm94PSIwIDAgNiA2IiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjojZmZmZmZmMDAiIHZlcnNpb249IjEuMSINCXhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbDpzcGFjZT0icHJlc2VydmUiDQl4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjZweCIgaGVpZ2h0PSI2cHgiDT4NCTxnIG9wYWNpdHk9IjAuMzAyIj4NCQk8cGF0aCBkPSJNIDYgNiBMIDAgNiBMIDAgNC4yIEwgNCA0LjIgTCA0LjIgNC4yIEwgNC4yIDAgTCA2IDAgTCA2IDYgTCA2IDYgWiIgZmlsbD0iIzAwMDAwMCIvPg0JPC9nPg08L3N2Zz4=");
+  background-position: bottom right;
+  padding: 0 3px 3px 0;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  box-sizing: border-box;
+  cursor: se-resize;
+}
+
+/* Hide scrollbars while maintaining scroll functionality */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Chrome, Safari and Opera */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide Highcharts scrollbar track but keep the thumb */
+.highcharts-scrollbar-track {
+  display: none;
+}
+
+
+src/env/.env.prod
+-----------------
+VITE_BACKEND_URL= "http://localhost:8080"   
+
+VITE_MODE="dev"
+
+src/components/ui/card.tsx
+--------------------------
+interface CardProps {
+  children: React.ReactNode;
+  className?: string;
+  gradient?: "blue" | "purple" | "teal" | "none";
+}
+
+const Card: React.FC<CardProps> = ({
+  children,
+  className = "",
+  gradient = "none",
+}) => {
+  const baseClasses = "rounded-lg shadow-md overflow-hidden";
+
+  const gradientClasses = {
+    blue: "bg-gradient-to-r from-blue-500 to-cyan-500 text-white",
+    purple: "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
+    teal: "bg-gradient-to-r from-teal-500 to-emerald-500 text-white",
+    none: "bg-white text-gray-800",
+  };
+
+  return (
+    <div className={`${baseClasses} ${gradientClasses[gradient]} ${className}`}>
+      {children}
+    </div>
+  );
+};
+
+export default Card;
+
+
+src/components/ui/button.tsx
+----------------------------
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+
+import { cn } from "@/utils/utils";
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default:
+          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        yellow:
+          "bg-[#D7FC70] text-black shadow hover:bg-[#D7FC70]/90 rounded-xl",
+      },
+      size: {
+        default: "h-9 px-4 py-2",
+        sm: "h-8 rounded-md px-3 text-xs",
+        lg: "h-10 rounded-md px-8",
+        icon: "h-9 w-9",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+);
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+Button.displayName = "Button";
+
+export { Button, buttonVariants };
+
+
+src/components/ui/ActionCard.tsx
+--------------------------------
+import React from "react";
+
+interface ActionCardProps {
+  title: string;
+  icon?: React.ReactNode;
+  gradient?: "blue" | "purple" | "teal";
+  buttonText: string;
+  onAction: () => void;
+}
+
+const ActionCard: React.FC<ActionCardProps> = ({
+  title,
+  icon,
+  gradient = "blue",
+  buttonText,
+  onAction,
+}) => {
+  const gradientClasses = {
+    blue: "bg-gradient-to-r from-blue-500 to-cyan-500",
+    purple: "bg-gradient-to-r from-purple-400 to-pink-500",
+    teal: "bg-gradient-to-r from-teal-500 to-emerald-500",
+  };
+
+  return (
+    <div
+      className={`${gradientClasses[gradient]} rounded-xl p-5 text-white h-36 flex flex-col justify-between w-full`}
+    >
+      <div className="flex items-start justify-between">
+        <h3 className="font-medium text-sm">{title}</h3>
+        {icon && <div className="text-white">{icon}</div>}
+      </div>
+      <div className="mt-auto">
+        <button
+          onClick={onAction}
+          className="px-3 py-1.5 bg-black text-white text-xs rounded-md hover:opacity-80 transition-opacity"
+        >
+          {buttonText}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ActionCard;
+
+
+src/components/ui/Carousel.tsx
+------------------------------
+import * as React from "react";
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
+import useEmblaCarousel, {
+  type UseEmblaCarouselType,
+} from "embla-carousel-react";
+
+import { cn } from "@/utils/utils";
+import { Button } from "@/components/ui/Button";
+
+type CarouselApi = UseEmblaCarouselType[1];
+type UseCarouselParameters = Parameters<typeof useEmblaCarousel>[0];
+
+interface CarouselProps {
+  opts?: UseCarouselParameters;
+  plugins?: UseEmblaCarouselType[2];
+  orientation?: "horizontal" | "vertical";
+  setApi?: (api: CarouselApi) => void;
+}
+
+type CarouselContextProps = {
+  carouselRef: ReturnType<typeof useEmblaCarousel>[0];
+  api: ReturnType<typeof useEmblaCarousel>[1];
+  scrollPrev: () => void;
+  scrollNext: () => void;
+  canScrollPrev: boolean;
+  canScrollNext: boolean;
+} & CarouselProps;
+
+const CarouselContext = React.createContext<CarouselContextProps | null>(null);
+
+function useCarousel() {
+  const context = React.useContext(CarouselContext);
+
+  if (!context) {
+    throw new Error("useCarousel must be used within a <Carousel />");
+  }
+
+  return context;
+}
+
+const Carousel = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & CarouselProps
+>(
+  (
+    {
+      orientation = "horizontal",
+      opts,
+      setApi,
+      plugins,
+      className,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    const [carouselRef, api] = useEmblaCarousel(
+      {
+        ...opts,
+        axis: orientation === "horizontal" ? "x" : "y",
+      },
+      plugins
+    );
+    const [canScrollPrev, setCanScrollPrev] = React.useState(false);
+    const [canScrollNext, setCanScrollNext] = React.useState(false);
+
+    const onSelect = React.useCallback((api: CarouselApi) => {
+      if (!api) {
+        return;
+      }
+
+      setCanScrollPrev(api.canScrollPrev());
+      setCanScrollNext(api.canScrollNext());
+    }, []);
+
+    const scrollPrev = React.useCallback(() => {
+      api?.scrollPrev();
+    }, [api]);
+
+    const scrollNext = React.useCallback(() => {
+      api?.scrollNext();
+    }, [api]);
+
+    const handleKeyDown = React.useCallback(
+      (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          scrollPrev();
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          scrollNext();
+        }
+      },
+      [scrollPrev, scrollNext]
+    );
+
+    React.useEffect(() => {
+      if (!api || !setApi) {
+        return;
+      }
+
+      setApi(api);
+    }, [api, setApi]);
+
+    React.useEffect(() => {
+      if (!api) {
+        return;
+      }
+
+      onSelect(api);
+      api.on("select", onSelect);
+      api.on("reInit", onSelect);
+
+      return () => {
+        api?.off("select", onSelect);
+        api?.off("reInit", onSelect);
+      };
+    }, [api, onSelect]);
+
+    return (
+      <CarouselContext.Provider
+        value={{
+          carouselRef,
+          api: api,
+          opts,
+          orientation:
+            orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+          scrollPrev,
+          scrollNext,
+          canScrollPrev,
+          canScrollNext,
+        }}
+      >
+        <div
+          ref={ref}
+          onKeyDownCapture={handleKeyDown}
+          className={cn("relative", className)}
+          role="region"
+          aria-roledescription="carousel"
+          {...props}
+        >
+          {children}
+        </div>
+      </CarouselContext.Provider>
+    );
+  }
+);
+Carousel.displayName = "Carousel";
+
+const CarouselContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
+  const { carouselRef, orientation } = useCarousel();
+
+  return (
+    <div ref={carouselRef} className="overflow-hidden">
+      <div
+        ref={ref}
+        className={cn(
+          "flex",
+          orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
+          className
+        )}
+        {...props}
+      />
+    </div>
+  );
+});
+CarouselContent.displayName = "CarouselContent";
+
+const CarouselItem = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
+  const { orientation } = useCarousel();
+
+  return (
+    <div
+      ref={ref}
+      role="group"
+      aria-roledescription="slide"
+      className={cn(
+        "min-w-0 shrink-0 grow-0 basis-full",
+        orientation === "horizontal" ? "pl-4" : "pt-4",
+        className
+      )}
+      {...props}
+    />
+  );
+});
+CarouselItem.displayName = "CarouselItem";
+
+const CarouselPrevious = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<typeof Button>
+>(({ className, variant = "outline", size = "icon", ...props }, ref) => {
+  const { orientation, scrollPrev, canScrollPrev } = useCarousel();
+
+  return (
+    <Button
+      ref={ref}
+      variant={variant}
+      size={size}
+      className={cn(
+        "absolute h-8 w-8 rounded-full",
+        orientation === "horizontal"
+          ? "-left-12 top-1/2 -translate-y-1/2"
+          : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
+        className
+      )}
+      disabled={!canScrollPrev}
+      onClick={scrollPrev}
+      {...props}
+    >
+      <ArrowLeftIcon className="h-4 w-4" />
+      <span className="sr-only">Previous slide</span>
+    </Button>
+  );
+});
+CarouselPrevious.displayName = "CarouselPrevious";
+
+const CarouselNext = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<typeof Button>
+>(({ className, variant = "outline", size = "icon", ...props }, ref) => {
+  const { orientation, scrollNext, canScrollNext } = useCarousel();
+
+  return (
+    <Button
+      ref={ref}
+      variant={variant}
+      size={size}
+      className={cn(
+        "absolute h-8 w-8 rounded-full",
+        orientation === "horizontal"
+          ? "-right-12 top-1/2 -translate-y-1/2"
+          : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
+        className
+      )}
+      disabled={!canScrollNext}
+      onClick={scrollNext}
+      {...props}
+    >
+      <ArrowRightIcon className="h-4 w-4" />
+      <span className="sr-only">Next slide</span>
+    </Button>
+  );
+});
+CarouselNext.displayName = "CarouselNext";
+
+export {
+  type CarouselApi,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+};
+
+
+src/components/ActivityList/ActivityItem.tsx
+--------------------------------------------
+import { ChevronRight } from "lucide-react";
+
+interface ActivityItemProps {
+  icon: React.ReactNode;
+  activity: string;
+  date: string;
+  reward: {
+    amount: number;
+    status: "success" | "in-transit" | "pending";
+  };
+}
+
+const ActivityItem: React.FC<ActivityItemProps> = ({
+  icon,
+  activity,
+  date,
+  reward,
+}) => {
+  const statusColors = {
+    success: "text-green-600",
+    "in-transit": "text-blue-600",
+    pending: "text-amber-600",
+  };
+
+  return (
+    <div className="flex items-center justify-between p-4 bg-[#F2F2F2] rounded-full hover:bg-gray-100 transition-colors mb-2">
+      <div className="flex items-center space-x-5">
+        <div>{icon}</div>
+
+        <div>
+          <p className="font-medium text-gray-800">{activity}</p>
+          <p className="text-sm text-gray-500">Won • {date}</p>
+        </div>
+      </div>
+
+      <div className="flex items-center">
+        <div className="mr-3 text-right">
+          <p className="font-medium">+ {reward.amount} Coins</p>
+          <p className={`text-sm ${statusColors[reward.status]}`}>
+            {reward.status === "success"
+              ? "Success"
+              : reward.status === "in-transit"
+              ? "In-Transit"
+              : "Pending"}
+          </p>
+        </div>
+        <ChevronRight size={18} className="text-gray-400" />
+      </div>
+    </div>
+  );
+};
+
+export default ActivityItem;
+
+
+src/components/ActivityList/ActivityList.tsx
+--------------------------------------------
+import ActivityItem from "./ActivityItem";
+
+interface Activity {
+  id: string;
+  type: "share" | "like" | "mention";
+  date: string;
+  reward: {
+    amount: number;
+    status: "success" | "in-transit" | "pending";
+  };
+}
+
+interface ActivityListProps {
+  activities: Activity[];
+}
+
+const ActivityList: React.FC<ActivityListProps> = ({ activities }) => {
+  const getActivityDetails = (activity: Activity) => {
+    switch (activity.type) {
+      case "share":
+        return {
+          icon: <img src="/telegram.png" alt="" className="w-10" />,
+          activity: "Shared A Post",
+        };
+      case "like":
+        return {
+          icon: <img src="/love.png" alt="" className="w-10" />,
+          activity: "Liked A Post",
+        };
+      case "mention":
+        return {
+          icon: <img src="/at.png" alt="" className="w-10" />,
+          activity: "Mentioned @Nigecoin",
+        };
+      default:
+        return {
+          icon: <img src="/telefram.png" alt="" className="w-10" />,
+          activity: "Unknown Activity",
+        };
+    }
+  };
+
+  return (
+    <div className="mt-6">
+      <h2 className="text-xl font-bold mb-4">Recent Activities</h2>
+      <div className="space-y-2">
+        {activities.map((activity) => {
+          const { icon, activity: activityText } = getActivityDetails(activity);
+
+          return (
+            <ActivityItem
+              key={activity.id}
+              icon={icon}
+              activity={activityText}
+              date={activity.date}
+              reward={activity.reward}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default ActivityList;
+
+
+src/components/Navigation/MobileNav.tsx
+---------------------------------------
+import { Home, Trophy, User } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+
+const MobileNav: React.FC = () => {
+  const location = useLocation();
+  const path = location.pathname;
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-200 flex items-center justify-around z-10 md:hidden">
+      <Link
+        to="/"
+        className={`flex flex-col items-center justify-center ${
+          path === "/" ? "text-teal-600" : "text-gray-500"
+        }`}
+      >
+        <Home size={24} />
+        <span className={`text-xs mt-1 ${path === "/" ? "" : "hidden"}`}>
+          Home
+        </span>
+      </Link>
+
+      <Link
+        to="/leader-board"
+        className={`flex flex-col items-center justify-center ${
+          path === "/leader-board" ? "text-teal-600" : "text-gray-500"
+        }`}
+      >
+        <Trophy size={24} />
+        <span
+          className={`text-xs mt-1 ${path === "/leader-board" ? "" : "hidden"}`}
+        >
+          Leader Board
+        </span>
+      </Link>
+
+      <Link
+        to="/profile"
+        className={`flex flex-col items-center justify-center ${
+          path === "/profile" ? "text-teal-600" : "text-gray-500"
+        }`}
+      >
+        <User size={24} />
+        <span className={`text-xs mt-1 ${path === "/profile" ? "" : "hidden"}`}>
+          Profile
+        </span>
+      </Link>
+    </div>
+  );
+};
+
+export default MobileNav;
+
+
+src/components/Navigation/Sidebar.tsx
+-------------------------------------
+import { Home, Trophy, Clock } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+
+const Sidebar: React.FC = () => {
+  const location = useLocation();
+  const path = location.pathname;
+
+  return (
+    <div className="hidden md:flex flex-col w-64 h-screen bg-[#00857F] text-white fixed">
+      <div className="p-6">
+        <div className="w-8 h-8 flex  ">
+          {/* Eagle icon from Lucide */}
+          <img src="/eagle.png" alt="Eagle icon" />
+          <span className="text-xl font-bold text-white">NigeCoin</span>
+        </div>
+      </div>
+
+      <div className="flex flex-col mt-8 space-y-2 flex-1">
+        <Link
+          to="/"
+          className={`flex items-center px-6 py-3 transition-colors ${
+            path === "/"
+              ? "bg-[#42F3EC] bg-opacity-10 border-l-4 border-white"
+              : "hover:bg-teal-800"
+          }`}
+        >
+          <Home size={20} className="mr-3" />
+          <span className="font-medium">Home</span>
+        </Link>
+
+        <Link
+          to="/leader-board"
+          className={`flex items-center px-6 py-3 transition-colors ${
+            path === "/leader-board"
+              ? "bg-[#42F3EC] bg-opacity-10 border-l-4 border-white"
+              : "hover:bg-teal-800"
+          }`}
+        >
+          <Trophy size={20} className="mr-3" />
+          <span className="font-medium">Leader Board</span>
+        </Link>
+
+        <Link
+          to="/coming-soon"
+          className={`flex items-center px-6 py-3 transition-colors ${
+            path === "/coming-soon"
+              ? "bg-[#42F3EC] bg-opacity-10 border-l-4 border-white"
+              : "hover:bg-teal-800"
+          }`}
+        >
+          <Clock size={20} className="mr-3" />
+          <span className="font-medium">Coming Soon</span>
+        </Link>
+      </div>
+      <figure className="bg-gradient-to-b from-[#206562 ] via-[#00857F] to-transparent  ">
+        <img src="/bg2.png" alt="NigeCoin" className="w-full" />
+      </figure>
+    </div>
+  );
+};
+
+export default Sidebar;
+
+
+src/components/User/UserProfile.tsx
+-----------------------------------
+interface UserProfileProps {
+  name: string;
+  coinBalance: number;
+  // profileImage: string;
+  notifications?: number;
+}
+
+const UserProfile: React.FC<UserProfileProps> = ({
+  name,
+  coinBalance,
+  // profileImage,
+  notifications = 0,
+}) => {
+  return (
+    <div className="flex items-center justify-between w-full">
+      <div className="flex items-center">
+        <div>
+          <p className="text-gray-500 text-sm">Hello,</p>
+          <h1 className="text-xl font-bold text-gray-800">{name}</h1>
+        </div>
+      </div>
+
+      <div className="flex items-center">
+        <div className="flex items-center">
+          <span className=" ">{coinBalance}</span>
+          <img src="/nigecoin.gif" alt="Coin" className="w-16" />
+        </div>
+
+        {/* <div className="relative">
+          <img
+            src={profileImage}
+            alt={name}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        </div> */}
+
+        <div className="relative">
+          <img src="/Bell.png" className=" " />
+          {notifications > 0 && (
+            <span className="absolute -top-1 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+              {notifications > 9 ? "9+" : notifications}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default UserProfile;
+
+
+src/components/LeaderBoard/LeaderBoard.tsx
+------------------------------------------
+import LeaderBoardItem from "./LeaderBoardItem";
+
+interface User {
+  id: string;
+  name: string;
+  avatar: string;
+  username: string;
+  coins: number;
+}
+
+interface LeaderBoardProps {
+  users: User[];
+}
+
+const LeaderBoard: React.FC<LeaderBoardProps> = ({ users }) => {
+  // Sort users by coins (highest first)
+  const sortedUsers = [...users].sort((a, b) => b.coins - a.coins);
+
+  return (
+    <div className="p-4">
+      <div className="py-6">
+        <img src="/leader.png" alt="leader" className="w-full" />
+      </div>
+
+      <div className="space-y-2">
+        {sortedUsers.slice(0, 10).map((user, index) => (
+          <LeaderBoardItem
+            key={user.id}
+            rank={index + 1}
+            user={{
+              name: user.name,
+              id: user.username,
+              avatar: user.avatar,
+              coins: user.coins,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default LeaderBoard;
+
+
+src/components/LeaderBoard/LeaderBoardItem.tsx
+----------------------------------------------
+interface LeaderBoardItemProps {
+  rank: number;
+  user: {
+    name: string;
+    id: string;
+    avatar: string;
+    coins: number;
+  };
+}
+
+const LeaderBoardItem: React.FC<LeaderBoardItemProps> = ({ rank, user }) => {
+  const isTopTen = rank <= 10;
+
+  return (
+    <div
+      className={`flex items-center justify-between p-4 ${
+        isTopTen ? "bg-teal-600 text-white" : "bg-white text-gray-800"
+      } rounded-lg shadow-sm mb-2`}
+    >
+      <div className="flex items-center space-x-4">
+        <div
+          className={`w-8 h-8 flex items-center justify-center font-bold ${
+            isTopTen ? "text-teal-600 bg-white" : "text-white bg-teal-600"
+          } rounded-full`}
+        >
+          {rank}
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <img
+            src={user.avatar}
+            alt={user.name}
+            className="w-10 h-10 rounded-full object-cover border-2 border-white"
+          />
+
+          <div>
+            <p className="font-medium">{user.name}</p>
+            <p
+              className={`text-xs ${
+                isTopTen ? "text-teal-100" : "text-gray-500"
+              }`}
+            >
+              @{user.id}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="font-bold">{user.coins} coins</div>
+    </div>
+  );
+};
+
+export default LeaderBoardItem;
+
+
+src/components/common/Preview.tsx
+---------------------------------
+import { cn } from "@/utils/utils";
+
+export const RichTextPreview = ({ content }: { content: string }) => {
+  const transformedContent = content.replace(/<p><\/p>/g, "<br />");
+
+  return (
+    <div
+      className={cn(
+        "prose dark:prose-invert max-w-none",
+        "bg-background",
+        "[&>*:first-child]:mt-0",
+        "[&>*:last-child]:mb-0",
+        "[&>ul]:list-disc", // Apply 'list-disc' to unordered lists (ul)
+        "[&>ol]:list-decimal", // Apply 'list-decimal' to ordered lists (ol)
+        "[&>ul>li]:ml-6", // Indent unordered list items
+        "[&>ol>li]:ml-6" // Indent ordered list items
+      )}
+      dangerouslySetInnerHTML={{ __html: transformedContent }}
+    />
+  );
+};
+
+
+src/components/common/modals/custom-modal.tsx
+---------------------------------------------
+import { ReactNode } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { X } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/utils/utils";
+
+export const CustomModal = ({
+  children,
+  isOpen,
+  onClose,
+  title,
+  onSubmit,
+  submitButtonText,
+  submitButtonClass,
+  submitButtonProps,
+  footer,
+  contentContainerClass,
+  isLoading,
+  loader,
+  needX,
+  isSubmitting,
+}: {
+  children: ReactNode;
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  onSubmit: () => void;
+  submitButtonText?: string;
+  submitButtonClass?: string;
+  submitButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
+  footer?: ReactNode;
+  contentContainerClass?: string;
+  isLoading?: boolean;
+  loader?: ReactNode;
+  needX?: boolean;
+  isSubmitting?: boolean;
+}) => {
+  return (
+    <AlertDialog open={isOpen}>
+      <AlertDialogContent
+        className={cn(
+          "w-full max-w-[95vw] sm:max-w-[85vw] md:max-w-[75vw] lg:max-w-[65vw] xl:max-w-[55vw] 2xl:max-w-[45vw]",
+          "h-[60vh] sm:h-[50vh] lg:h-[60vh]",
+          "max-h-[90vh] sm:max-h-[85vh] md:max-h-[80vh] lg:max-h-[75vh] xl:max-h-[70vh]",
+          "p-4 sm:p-6",
+          "overflow-hidden",
+          contentContainerClass
+        )}
+      >
+        <AlertDialogHeader className="space-y-3">
+          <div className="flex items-center justify-between">
+            <AlertDialogTitle className="text-xl sm:text-2xl font-semibold">
+              {title}
+            </AlertDialogTitle>
+            {needX && (
+              <button
+                onClick={onClose}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
+          </div>
+          <Separator className="bg-gray-200 dark:bg-gray-700" />
+        </AlertDialogHeader>
+
+        <AlertDialogDescription className="flex-grow overflow-hidden py-4">
+          <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent pr-2">
+            {isLoading
+              ? loader ?? (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="animate-pulse text-gray-500 dark:text-gray-400">
+                      Loading...
+                    </div>
+                  </div>
+                )
+              : children}
+          </div>
+        </AlertDialogDescription>
+
+        <AlertDialogFooter className="flex-shrink-0 xl:pt-2 gap-3">
+          {footer ?? (
+            <>
+              <AlertDialogCancel onClick={onClose} className="sm:w-auto w-full">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                disabled={!!isSubmitting}
+                className={cn(
+                  "sm:w-auto w-full",
+                  isSubmitting && "opacity-50 cursor-not-allowed",
+                  submitButtonClass
+                )}
+                onClick={onSubmit}
+                {...submitButtonProps}
+              >
+                {submitButtonText ?? "Submit"}
+              </AlertDialogAction>
+            </>
+          )}
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+
+src/components/common/Footer.tsx
+--------------------------------
+import { FaFacebookF, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa";
+
+const Footer = () => {
+  return (
+    <footer className="relative min-h-[60vh] lg:min-h-[83vh] md:h-0 xl:h-auto max-h-[83vh] overflow-hidden">
+      <div  className="w-[100vw] mb-96 relative">
+      <video
+        className="w-full object-contain object-bottom scale-[3.5] translate-y-[90%] md:scale-[2] md:translate-y-[14%] lg:scale-150 lg:-translate-y-[4%]"
+        autoPlay loop muted playsInline
+      >
+        <source src="/assets/footer.mp4" type="video/mp4" />
+      </video>
+
+      <section className="absolute inset-0 flex flex-col items-center text-center text-white z-10 pt-52 md:pt-28 lg:pt-20 xl:pt-32">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-semibold mb-4 max-w-4xl md:max-w-2xl lg:max-w-3xl xl:max-w-5xl 2xl:max-w-7xl">
+          Grow Smarter, Not Harder.
+        </h1>
+        <p className="lg:text-xl 2xl:text-3xl max-w-4xl lg:max-w-3xl 2xl:max-w-7xl">
+          Discover innovative tools and technologies that simplify farming while
+          maximizing yields.
+        </p>
+        <div className="text-lg 2xl:text-xl flex gap-7 py-10 2xl:py-16">
+          <span className="bg-[#1D4DFF] rounded-full p-4">
+            <FaFacebookF />
+          </span>
+          <span className="bg-[#1D4DFF] rounded-full p-4">
+            <FaLinkedin />
+          </span>
+          <span className="bg-[#1D4DFF] rounded-full p-4">
+            <FaTwitter />
+          </span>
+          <span className="bg-[#1D4DFF] rounded-full p-4">
+            <FaYoutube />
+          </span>
+        </div>
+        <a href="https://palnesto.com/" target="_blank" rel="noopener noreferrer" className="w-32 xl:w-60 2xl:w-44">
+          <img src="/assets/Designed by palnesto mobile.svg" alt="" className="w-full " />
+        </a>
+      </section>
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black to-gray-800 opacity-70" />
+    </footer>
+  );
+};
+
+export default Footer;
+
+
+src/components/common/ServiceSupport.tsx
+----------------------------------------
+import { FaPhone } from "react-icons/fa6";
+const ServiceSupport = () => {
+  return (
+    <section className="text-lg md:text-[25px] font-bold flex flex-col items-center py-14 px-3 md:py-28 gap-y-5 text-center">
+      <h2 className="text-[#1D4DFF]">Get in touch</h2>
+      <h1 className="text-[#252B42] text-4xl md:text-7xl">
+        Service And Support
+      </h1>
+      <p className="text-[#737373] font-normal max-w-6xl">
+        All services and advanced maintenance will be done at Smart Rotamach Pvt
+        Ltd - 501401 and at upcoming dealer locations.
+      </p>
+      <a
+        href="https://wa.me/919650912448"
+        target="_blank"
+        className="flex gap-5 items-center pt-5"
+      >
+        <FaPhone /> +91 8897600171
+      </a>
+
+      <figure className="md:w-xl">
+        <img
+          src="/assets/herodrone.png"
+          alt=""
+          className="w-full h-full object-contain"
+        />
+      </figure>
+    </section>
+  );
+};
+
+export default ServiceSupport;
+
+
+src/components/common/scroll-to-hash.tsx
+----------------------------------------
+// src/components/ScrollToHash.tsx
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+export const ScrollToHash: React.FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.substring(1);
+      console.log(`ScrollToHash: Found hash #${id}`);
+      const attemptScroll = (attempt = 0) => {
+        const element = document.getElementById(id);
+        console.log(`Attempt ${attempt} to scroll to #${id}`, element);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+          console.log(`Scrolled to #${id}`);
+        } else if (attempt < 20) {
+          setTimeout(() => attemptScroll(attempt + 1), 100);
+        } else {
+          console.warn(
+            `Element with id "${id}" not found after multiple attempts.`
+          );
+        }
+      };
+
+      attemptScroll();
+    }
+  }, [location.hash]);
+
+  return null;
+};
+
+export const useSectionNavigation = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const navigateToSection = (target: string): void => {
+    const [page] = target.split("#");
+    if (location.pathname !== page) {
+      navigate(target);
+    } else {
+      // When already on the target page, update the URL hash and trigger scrolling
+      navigate(target, { replace: true });
+    }
+  };
+
+  return { navigateToSection };
+};
+
+
+src/components/common/Button.tsx
+--------------------------------
+import React from "react";
+
+interface ButtonProps {
+  label: string;
+  iconSrc?: string;
+  className?: string;
+  onClick?: () => void;
+}
+
+const Button: React.FC<ButtonProps> = ({ label, iconSrc, className, onClick }) => {
+  return (
+    <button
+      className={`bg-[#167AC6] hover:bg-blue-700 text-white font-bold px-5 md:px-12 py-3 rounded-lg flex items-center gap-4 ${className}`}
+      onClick={onClick}
+    >
+      {label}
+      {iconSrc && <img src={iconSrc} alt="icon" />}
+    </button>
+  );
+};
+
+export default Button;
+
+
+src/components/max-width-container.tsx
+--------------------------------------
+import { ReactNode } from "react";
+
+interface MaxWidthContainerProps {
+  children: ReactNode;
+}
+
+export function MaxWidthContainer({ children }: MaxWidthContainerProps) {
+  return (
+    <div className="max-w-[1980px] w-full overflow-hidden">{children}</div>
+  );
+}
+
+
+src/layouts/AppLayout.tsx
+-------------------------
+import { ReactNode } from "react";
+import MobileNav from "../components/Navigation/MobileNav";
+import Sidebar from "../components/Navigation/Sidebar";
+import UserProfile from "../components/User/UserProfile";
+
+const AppLayout = ({ children }: { children: ReactNode }) => {
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar for desktop */}
+      <Sidebar />
+
+      {/* Fixed UserProfile */}
+      <div className="fixed top-0 left-0 right-0 bg-white z-10 md:left-64 px-4 py-3">
+        <UserProfile
+          name="Rishabh Hurshan"
+          coinBalance={1250}
+          // profileImage="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100"
+          notifications={3}
+        />
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 md:ml-64 relative">
+        <div className="h-screen overflow-y-auto pt-20 pb-20 md:pb-6">
+          <div className="max-w-full overflow-x-hidden">{children}</div>
+        </div>
+      </div>
+
+      {/* Mobile navigation */}
+      <MobileNav />
+    </div>
+  );
+};
+
+export default AppLayout;
+
+
+src/vite-env.d.ts
+-----------------
+/// <reference types="vite/client" />
+/// <reference types="vite-plugin-pages/client-react" />
+/// <reference types="vite-plugin-svgr/client" />
+
+
+src/hooks/use-mobile.tsx
+------------------------
+import * as React from "react"
+
+const MOBILE_BREAKPOINT = 768
+
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+
+  return !!isMobile
+}
+
+
+src/hooks/useApiQuery.ts
+------------------------
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import apiInstance, { BASE_URL } from "../api/queryClient";
+
+export const useApiQuery = (
+  route: string,
+  options?: UseQueryOptions<any, any>
+) => {
+  return useQuery({
+    queryKey: [route],
+    queryFn: async () => {
+      const response = await apiInstance.get(`${BASE_URL}${route}`);
+      return response;
+    },
+    ...options,
+  });
+};
+
+
+src/hooks/useApiMutation.ts
+---------------------------
+import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import apiInstance from "../api/queryClient";
+import { appToast } from "@/utils/toast";
+
+export const useApiMutation = <TData, TResponse>({
+  route,
+  method = "POST",
+  onSuccess,
+  onError,
+}: {
+  route: string;
+  method: "POST" | "PATCH" | "DELETE"; // Restrict method to specific HTTP verbs
+  options?: UseMutationOptions<TResponse, Error, TData>;
+  onSuccess?: (data: TResponse) => void;
+  onError?: (error: Error) => void;
+}) => {
+  return useMutation({
+    mutationFn: async (newData) => {
+      if (method === "POST") {
+        const response = await apiInstance.post(route, newData);
+        return response.data;
+      } else if (method === "PATCH") {
+        const response = await apiInstance.patch(route, newData);
+        return response.data;
+      } else if (method === "DELETE") {
+        const response = await apiInstance.delete(route, { data: newData }); // Fixed DELETE syntax for sending body
+        return response.data;
+      }
+    },
+    onSuccess: (data) => {
+      onSuccess?.(data);
+    },
+    onError: (error: any) => {
+      // Extract error message
+      const errorMessage =
+        error?.response?.data?.message || "An unexpected error occurred";
+      appToast.error(errorMessage); // Show error toast
+      onError?.(error);
+    },
+  });
+};
+
+
+src/hooks/useAssetUpload.ts
+---------------------------
+import { useState } from "react";
+
+// const GITHUB_URL = "https://github.com/saranshkhulbe7/random";
+async function fetchSignedUrl(
+  fileName: string,
+  shouldSameUrl: boolean = false
+) {
+  const res = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/utils/signed-url`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ file: { fileName }, shouldSameUrl }),
+    }
+  );
+  if (!res.ok) throw new Error("Failed to fetch signed URL");
+  const data = await res.json();
+  return data.signedUrl;
+}
+
+async function uploadFile(signedUrl: string, file: File) {
+  const res = await fetch(signedUrl, {
+    method: "PUT",
+    headers: { "Content-Type": file.type || "application/octet-stream" },
+    body: file,
+  });
+  if (!res.ok) throw new Error("File upload failed");
+  return signedUrl.split("?")[0];
+}
+
+export function extractKey(url: string): string {
+  const parts = url.split(".com/");
+  if (parts.length < 2) throw new Error("Cannot extract key from URL");
+  const key = parts[1].split("?")[0];
+
+  // ✅ Decode the key to prevent double encoding
+  return decodeURIComponent(key);
+}
+
+function useAssetUpload() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function uploadAsset(file: File, assetConfig: object) {
+    setLoading(true);
+    setError(null);
+    try {
+      // 1. Get signed URL
+      const signedUrl = await fetchSignedUrl(file.name);
+      // 2. Upload file
+      const finalFileUrl = await uploadFile(signedUrl, file);
+      // 3. Finalize asset processing
+      // await finalizeAsset(finalFileUrl, assetConfig);
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/utils/make-public`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          file: { fileName: extractKey(finalFileUrl) },
+        }),
+      });
+      return finalFileUrl;
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { loading, error, uploadAsset };
+}
+
+export function useImageUpload() {
+  const { loading, error, uploadAsset } = useAssetUpload();
+  async function uploadImage(
+    file: File,
+    cropParams?: { x: number; y: number; width: number; height: number },
+    compress: boolean = true
+  ) {
+    return await uploadAsset(file, {
+      imageProps: { cropParams, compress },
+    });
+  }
+
+  return { loading, error, uploadImage };
+}
+
+export function useVideoUpload() {
+  const { loading, error, uploadAsset } = useAssetUpload();
+  async function uploadVideo(
+    file: File,
+    trimParams?: { start: number; end: number },
+    cropParams?: { x: number; y: number; width: number; height: number },
+    compression: boolean = false
+  ) {
+    return await uploadAsset(file, {
+      videoProps: { trimParams, cropParams, compression },
+    });
+  }
+
+  return { loading, error, uploadVideo };
+}
+
+export function usePdfUpload() {
+  const { loading, error, uploadAsset } = useAssetUpload();
+  async function uploadPdf(file: File, compress: boolean = true) {
+    return await uploadAsset(file, {
+      pdfProps: { compress },
+    });
+  }
+
+  return { loading, error, uploadPdf };
+}
+
+// async function finalizeAsset(fileUrl: string, assetConfig: object) {
+//   const key = extractKey(fileUrl);
+//   const overwriteUrl = await fetchSignedUrl(key, true);
+//   const res = await fetch(`${ASSET_SERVER_URL}/api/v1/assets`, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({
+//       source: GITHUB_URL,
+//       originalUrl: fileUrl,
+//       overwriteUrl,
+//       assetConfig,
+//     }),
+//   });
+
+//   if (!res.ok) throw new Error("Asset finalization failed");
+//   return await res.json();
+// }
+
+
+src/configs/dayjs.ts
+--------------------
+// src/dayjsConfig.ts
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import updateLocale from "dayjs/plugin/updateLocale";
+
+// Extend Day.js with the Relative Time plugin
+dayjs.extend(relativeTime);
+dayjs.extend(updateLocale);
+// Customize the 'en' locale with abbreviated relative time strings
+dayjs.updateLocale("en", {
+  relativeTime: {
+    future: "in %s",
+    past: "%s ago",
+    s: "s",
+    m: "m",
+    mm: "%dm",
+    h: "h",
+    hh: "%dh",
+    d: "d",
+    dd: "%dd",
+    M: "mo",
+    MM: "%dmo",
+    y: "y",
+    yy: "%dy",
+  },
+});
+
+export default dayjs;
+
+
+src/api/endpoints/index.ts
+--------------------------
+const endpoints = {
+  products: {
+    all: `/product`,
+    one: (id: string) => `/product/${id}`,
+  },
+};
+
+export default endpoints;
+
+
+src/api/queryClient.ts
+----------------------
+// import { appToast } from "@/utils/toast";
+import { QueryClient, QueryFunctionContext } from "@tanstack/react-query";
+import axios from "axios";
+
+// export const BASE_URL = "http://localhost:4500";
+export const BASE_URL = import.meta.env.VITE_BACKEND_URL! || "";
+
+const apiInstance = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: true,
+});
+
+// Add an interceptor for error handling
+apiInstance.interceptors.response.use(
+  (response) => response, // Pass through successful responses
+  (error) => {
+    // Extract message from error
+    // const errorMessage =
+    //   error.response?.data?.message || "An unexpected error occurred";
+    // appToast.error(errorMessage); // Show the error toast
+    return Promise.reject(error); // Pass the error to the caller
+  }
+);
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      queryFn: async ({ queryKey, signal }: QueryFunctionContext) => {
+        const { data } = await apiInstance(`${queryKey[0]}`, { signal });
+        return data;
+      },
+    },
+  },
+});
+
+export default apiInstance;
+
+
+src/pages/index.tsx
+-------------------
+import ActionCard from "@/components/ui/ActionCard";
+import ActivityList from "@/components/ActivityList/ActivityList";
+import { Twitter, PenTool, Share, MessageCircle } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/Carousel";
+
+const HomePage: React.FC = () => {
+  // Mock activities data
+  const activities = [
+    {
+      id: "1",
+      type: "share" as const,
+      date: "Sep 18, 2023",
+      reward: { amount: 50, status: "in-transit" as const },
+    },
+    {
+      id: "2",
+      type: "like" as const,
+      date: "August 08, 2023",
+      reward: { amount: 50, status: "success" as const },
+    },
+    {
+      id: "3",
+      type: "mention" as const,
+      date: "July 22, 2023",
+      reward: { amount: 50, status: "success" as const },
+    },
+  ];
+
+  const actionCards = [
+    {
+      title: "Write Your First Post on X @Nigecoin",
+      gradient: "blue" as const,
+      buttonText: "Get 100XP",
+      icon: <Twitter size={24} />,
+      action: "twitter-post",
+    },
+    {
+      title: "Write something and tag us",
+      gradient: "teal" as const,
+      buttonText: "Get 100XP",
+      icon: <PenTool size={24} />,
+      action: "tag-post",
+    },
+    {
+      title: "Share our latest update",
+      gradient: "blue" as const,
+      buttonText: "Get 50XP",
+      icon: <Share size={24} />,
+      action: "share-post",
+    },
+    {
+      title: "Join the conversation",
+      gradient: "teal" as const,
+      buttonText: "Get 75XP",
+      icon: <MessageCircle size={24} />,
+      action: "join-conversation",
+    },
+  ];
+
+  const earnCards = [
+    {
+      title: "Daily Check-in Bonus",
+      gradient: "purple" as const,
+      buttonText: "Claim Now",
+      action: "daily-bonus",
+    },
+    {
+      title: "Complete Profile",
+      gradient: "blue" as const,
+      buttonText: "Start Now",
+      action: "complete-profile",
+    },
+    {
+      title: "Invite Friends",
+      gradient: "teal" as const,
+      buttonText: "Share Link",
+      action: "invite-friends",
+    },
+    {
+      title: "Join Discord",
+      gradient: "purple" as const,
+      buttonText: "Connect",
+      action: "join-discord",
+    },
+    {
+      title: "Follow on X",
+      gradient: "blue" as const,
+      buttonText: "Follow Now",
+      action: "follow-x",
+    },
+    {
+      title: "Join Community",
+      gradient: "teal" as const,
+      buttonText: "Join Now",
+      action: "join-community",
+    },
+  ];
+
+  // Action handlers (placeholders)
+  const handleAction = (action: string) => {
+    console.log(`Action triggered: ${action}`);
+  };
+
+  return (
+    <div className="container mx-auto px-10 md:px-6">
+      {/* Action Cards */}
+      <div className="mb-8">
+        <Carousel
+          opts={{
+            align: "start",
+            slidesToScroll: 1,
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-2 md:-ml-4">
+            {actionCards.map((card, index) => (
+              <CarouselItem
+                key={index}
+                className="pl-2 md:pl-4 basis-full md:basis-1/2"
+              >
+                <ActionCard
+                  title={card.title}
+                  gradient={card.gradient}
+                  buttonText={card.buttonText}
+                  icon={card.icon}
+                  onAction={() => handleAction(card.action)}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      </div>
+
+      {/* Ways to Earn */}
+      <div className="mb-8  ">
+        {/* <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 -z-10" /> */}
+        <h2 className="text-xl font-bold mb-4 text-white px-4 pt-4">
+          New Ways to Earn
+        </h2>
+        <Carousel
+          opts={{
+            align: "start",
+            slidesToScroll: 1,
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-2 md:-ml-4">
+            {earnCards.map((card, index) => (
+              <CarouselItem
+                key={index}
+                className="pl-2 md:pl-4 basis-1/2 md:basis-1/2 lg:basis-1/3"
+              >
+                <ActionCard
+                  title={card.title}
+                  gradient={card.gradient}
+                  buttonText={card.buttonText}
+                  onAction={() => handleAction(card.action)}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      </div>
+
+      {/* Recent Activities */}
+      <ActivityList activities={activities} />
+    </div>
+  );
+};
+
+export default HomePage;
+
+
+src/pages/login.tsx
+-------------------
+import { Button } from "@/components/ui/Button";
+import { useNavigate } from "react-router-dom";
+
+const LoginPage = () => {
+  const navigate = useNavigate();
+
+  const handleContinueWithX = () => {
+    // Here you would typically handle X authentication
+    // For now, we'll just navigate to the home page
+    navigate("/");
+  };
+
+  return (
+    <div className="min-h-screen bg-[#00857F] flex flex-col items-center relative overflow-hidden">
+      {/* Logo Section with Background */}
+      <div className="flex-1 w-full flex flex-col items-center justify-between pt-12 relative">
+        <div className="relative pb-4">
+          {/* <img
+            src="/bg1.png"
+            alt=""
+            className="absolute inset-0 w-full h-full "
+          /> */}
+          <div className="flex flex-col items-center gap-2">
+            <img src="/eagle.png" alt="NigeCoin" className="w-24" />
+            <span className="text-2xl font-bold text-white">NigeCoin</span>
+          </div>
+        </div>
+
+        <div className="relative">
+          <img
+            src="/bg2.png"
+            alt=""
+            className="absolute object-contain md:hidden"
+          />
+          <div className="flex flex-col items-center pb-4">
+            <img src="/rewards.png" alt="Rewards" className="w-64" />
+            <img src="/Platform.png" alt="Platform" className="w-52 -mt-4" />
+          </div>
+        </div>
+      </div>
+
+      {/* Black Bottom Section */}
+      <div className="w-full flex items-center justify-center relative">
+        <div className="bg-gradient-to-b from-[#206562 ] via-[#00857F] to-transparent absolute z-10 w-full h-32 top-0" />
+        <img
+          src="/bg2.png"
+          alt="NigeCoin"
+          className="w-full h-full absolute object-cover object-center lg:object-fill lg:object-top hidden md:block"
+        />
+        <div className="w-full md:w-96 bg-black rounded-t-[2.5rem] px-6 py-8 z-10 flex flex-col items-center ">
+          <h2 className="text-2xl font-bold text-white mb-3 text-center">
+            Sign in for rewards
+          </h2>
+          <p className="text-center text-white opacity-80 mb-8">
+            Complete Tasks and earn Rewards from Nigecoin Platform
+          </p>
+
+          <Button
+            variant="yellow"
+            className="mb-4 gap-2 w-96 md:w-full"
+            onClick={handleContinueWithX}
+          >
+            Continue with{" "}
+            <img src="/twitter.png" alt="twitter" className="w-4 h-4" />
+          </Button>
+
+          <div className="text-white text-center mt-4">
+            Already have an account?{" "}
+            <button
+              onClick={handleContinueWithX}
+              className="text-lime-400 font-medium"
+            >
+              Log In
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LoginPage;
+
+
+src/pages/leader-board.tsx
+--------------------------
+import LeaderBoard from "../components/LeaderBoard/LeaderBoard";
+
+const LeaderBoardPage = () => {
+  const users = [
+    {
+      id: "1",
+      name: "DanielM",
+      username: "daniel34",
+      avatar:
+        "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=100",
+      coins: 5000,
+    },
+    {
+      id: "2",
+      name: "Rishabh Hurshan",
+      username: "rishh123",
+      avatar:
+        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100",
+      coins: 5000,
+    },
+    {
+      id: "3",
+      name: "Sheva_J11",
+      username: "sheva123",
+      avatar:
+        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=100",
+      coins: 5000,
+    },
+    {
+      id: "4",
+      name: "DonateloO",
+      username: "donvtes",
+      avatar:
+        "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100",
+      coins: 5000,
+    },
+    {
+      id: "5",
+      name: "ILona_J",
+      username: "ilona123",
+      avatar:
+        "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100",
+      coins: 5000,
+    },
+    {
+      id: "6",
+      name: "VitaliiVitalii",
+      username: "vitalii78",
+      avatar:
+        "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=100",
+      coins: 5000,
+    },
+    {
+      id: "7",
+      name: "Alex22",
+      username: "alex787",
+      avatar:
+        "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=100",
+      coins: 5000,
+    },
+    {
+      id: "8",
+      name: "Roza23",
+      username: "roza782",
+      avatar:
+        "https://images.pexels.com/photos/1587009/pexels-photo-1587009.jpeg?auto=compress&cs=tinysrgb&w=100",
+      coins: 5000,
+    },
+    {
+      id: "9",
+      name: "Yaroslavovich",
+      username: "yaroz2",
+      avatar:
+        "https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=100",
+      coins: 5000,
+    },
+    {
+      id: "10",
+      name: "Donald_D1",
+      username: "donald83",
+      avatar:
+        "https://images.pexels.com/photos/697509/pexels-photo-697509.jpeg?auto=compress&cs=tinysrgb&w=100",
+      coins: 5000,
+    },
+  ];
+
+  return (
+    <div className="pb-20 md:pb-6">
+      <LeaderBoard users={users} />
+    </div>
+  );
+};
+
+export default LeaderBoardPage;
+
+
+src/pages/[...any].tsx
+----------------------
+import { Axe } from "lucide-react";
+
+export function NotFound() {
+  return (
+    <div className="flex h-full  flex-grow flex-col items-center justify-center gap-3 text-gray-600">
+      <Axe size={50} strokeWidth={0.8} />
+      <p>Broken or Invalid URL</p>
+    </div>
+  );
+}
+
+export default function NOT_FOUND_ROUTE() {
+  return <NotFound />;
+}

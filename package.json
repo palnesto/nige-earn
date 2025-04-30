@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "dotenv -e src/env/.env.local vite",
+    "dev:test": "dotenv -e src/env/.env.local vite",
+    "build": "dotenv -e /app/src/env/.env.prod vite build",
+    "preview": "dotenv -e /app/src/env/.env.prod vite preview"
   },
   "dependencies": {
     "@heroui/accordion": "^2.2.8",
@@ -60,6 +60,7 @@
     "@types/react-grid-layout": "^1.3.5",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^9.15.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
