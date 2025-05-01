@@ -1,6 +1,15 @@
-import { useMutation, UseMutationOptions } from "@tanstack/react-query";
-import apiInstance from "../api/queryClient";
+import { useMutation } from "@tanstack/react-query";
+import apiInstance from "@/api/queryClient";
 import { appToast } from "@/utils/toast";
+
+function resolveRoute(route: string): string {
+  if (route.startsWith("/auth") || route.startsWith("/health-check")) {
+    return route;
+  }
+  return `/nige-earn${route.startsWith("/") ? "" : "/"}${route}`;
+}
+
+type HttpMethod = "POST" | "PATCH" | "DELETE";
 
 export const useApiMutation = <TData, TResponse>({
   route,
@@ -9,33 +18,34 @@ export const useApiMutation = <TData, TResponse>({
   onError,
 }: {
   route: string;
-  method: "POST" | "PATCH" | "DELETE"; // Restrict method to specific HTTP verbs
-  options?: UseMutationOptions<TResponse, Error, TData>;
+  method?: HttpMethod;
   onSuccess?: (data: TResponse) => void;
   onError?: (error: Error) => void;
 }) => {
+  const path = resolveRoute(route);
+
   return useMutation({
-    mutationFn: async (newData) => {
-      if (method === "POST") {
-        const response = await apiInstance.post(route, newData);
-        return response.data;
-      } else if (method === "PATCH") {
-        const response = await apiInstance.patch(route, newData);
-        return response.data;
-      } else if (method === "DELETE") {
-        const response = await apiInstance.delete(route, { data: newData }); // Fixed DELETE syntax for sending body
-        return response.data;
+    mutationFn: async (payload: TData) => {
+      switch (method) {
+        case "POST": {
+          const { data } = await apiInstance.post(path, payload);
+          return data as TResponse;
+        }
+        case "PATCH": {
+          const { data } = await apiInstance.patch(path, payload);
+          return data as TResponse;
+        }
+        case "DELETE": {
+          const { data } = await apiInstance.delete(path, { data: payload });
+          return data as TResponse;
+        }
       }
     },
-    onSuccess: (data) => {
-      onSuccess?.(data);
-    },
-    onError: (error: any) => {
-      // Extract error message
-      const errorMessage =
-        error?.response?.data?.message || "An unexpected error occurred";
-      appToast.error(errorMessage); // Show error toast
-      onError?.(error);
+    onSuccess,
+    onError: (err: any) => {
+      const msg = err?.response?.data?.message ?? "Unexpected error";
+      appToast.error(msg);
+      onError?.(err);
     },
   });
 };

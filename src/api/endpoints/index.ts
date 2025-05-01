@@ -1,8 +1,7 @@
+import { nigeEarn } from "./nige-earn";
+
 const endpoints = {
-  products: {
-    all: `/product`,
-    one: (id: string) => `/product/${id}`,
-  },
+  nigeEarn,
 };
 
 export default endpoints;
