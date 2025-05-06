@@ -47,13 +47,7 @@ export default tseslint.config({
     ...react.configs['jsx-runtime'].rules,
   },
 })
-<<<<<<< Updated upstream
 ```
 
 
-test
-=======
 ````
-
-<!-- test -->
->>>>>>> Stashed changes
