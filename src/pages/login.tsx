@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
   const handleContinueWithX = () => {
-    const BACKEND = import.meta.env.VITE_BACKEND_URL; // e.g. http://localhost:4000
-    const returnTo = "http://localhost:5173"; // e.g. http://localhost:5173
+    const BACKEND = import.meta.env.VITE_BACKEND_URL;
+    const returnTo = import.meta.env.VITE_CLIENT_URL;
 
     // Updated → `/auth/start/nige-earn`
     window.location.href = `${BACKEND}/auth/start/nige-earn?returnTo=${encodeURIComponent(

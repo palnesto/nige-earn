@@ -2,7 +2,6 @@
 import { QueryClient, QueryFunctionContext } from "@tanstack/react-query";
 import axios from "axios";
 
-// export const BASE_URL = "http://localhost:4500";
 export const BASE_URL = import.meta.env.VITE_BACKEND_URL! || "";
 
 const apiInstance = axios.create({
