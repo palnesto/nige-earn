@@ -16,8 +16,8 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
       {/* Fixed UserProfile */}
       <div className="fixed top-0 left-0 right-0 bg-white z-10 md:left-64 px-4 py-3">
         <UserProfile
-          name="Rishabh Hurshan"
-          coinBalance={1250}
+          name={user?.profile?.username ?? "default"}
+          coinBalance={user?.account?.balance ?? "null"}
           // profileImage="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100"
           notifications={3}
         />
