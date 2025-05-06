@@ -17,19 +17,19 @@ RUN pnpm install
 COPY . .
 
 # Build the client admin app
-FROM base AS client-airforce-build
+FROM base AS client-nige-earn-build
 
 # Run the build script
 RUN pnpm run build
 
 # Final production image with Nginx
-FROM nginx:alpine AS client-react-airforce
+FROM nginx:alpine AS client-react-nige-earn
 
 # Copy the built files from the client-admin-build stage
-COPY --from=client-airforce-build /app/dist /usr/share/nginx/html
+COPY --from=client-nige-earn-build /app/dist /usr/share/nginx/html
 
 # Copy the nginx configuration file
-COPY --from=client-airforce-build /app/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=client-nige-earn-build /app/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
 EXPOSE 80
