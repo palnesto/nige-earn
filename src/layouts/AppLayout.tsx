@@ -2,8 +2,12 @@ import { ReactNode } from "react";
 import MobileNav from "../components/Navigation/MobileNav";
 import Sidebar from "../components/Navigation/Sidebar";
 import UserProfile from "../components/User/UserProfile";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const AppLayout = ({ children }: { children: ReactNode }) => {
+  const user = useAuthStore((s) => s.user);
+  console.log("user", user);
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar for desktop */}

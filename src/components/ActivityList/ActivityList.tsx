@@ -1,4 +1,6 @@
+import { useApiQuery } from "@/hooks/useApiQuery";
 import ActivityItem from "./ActivityItem";
+import endpoints from "@/api/endpoints";
 
 interface Activity {
   id: string;
@@ -14,7 +16,19 @@ interface ActivityListProps {
   activities: Activity[];
 }
 
-const ActivityList: React.FC<ActivityListProps> = ({ activities }) => {
+const ActivityList = ({ activities }: ActivityListProps) => {
+  const { data, isLoading, isError } = useApiQuery(
+    endpoints.nigeEarn.activities
+  );
+
+  if (isLoading) {
+    return <div>Loading…</div>;
+  }
+
+  if (isError) {
+    return <div>Error</div>;
+  }
+
   const getActivityDetails = (activity: Activity) => {
     switch (activity.type) {
       case "share":
@@ -40,6 +54,7 @@ const ActivityList: React.FC<ActivityListProps> = ({ activities }) => {
     }
   };
 
+  console.log(data);
   return (
     <div className="mt-6">
       <h2 className="text-xl font-bold mb-4">Recent Activities</h2>

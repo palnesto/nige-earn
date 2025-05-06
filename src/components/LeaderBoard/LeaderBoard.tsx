@@ -1,4 +1,6 @@
+import { useApiQuery } from "@/hooks/useApiQuery";
 import LeaderBoardItem from "./LeaderBoardItem";
+import endpoints from "@/api/endpoints";
 
 interface User {
   id: string;
@@ -13,6 +15,19 @@ interface LeaderBoardProps {
 }
 
 const LeaderBoard: React.FC<LeaderBoardProps> = ({ users }) => {
+  const { data, isLoading, isError } = useApiQuery(
+    endpoints.nigeEarn.leaderboard
+  );
+
+  if (isLoading) {
+    return <div>Loading…</div>;
+  }
+
+  if (isError) {
+    return <div>Error</div>;
+  }
+  console.log(data);
+
   // Sort users by coins (highest first)
   const sortedUsers = [...users].sort((a, b) => b.coins - a.coins);
 
