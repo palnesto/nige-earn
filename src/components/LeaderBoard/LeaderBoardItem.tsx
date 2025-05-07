@@ -1,52 +1,54 @@
 interface LeaderBoardItemProps {
   rank: number;
-  user: {
-    name: string;
-    id: string;
-    avatar: string;
-    coins: number;
-  };
+  name: string;
+  avatarUrl: string;
+  coins: number;
+  isCurrentUser: boolean;
 }
 
-const LeaderBoardItem: React.FC<LeaderBoardItemProps> = ({ rank, user }) => {
-  const isTopTen = rank <= 10;
-
+const LeaderBoardItem: React.FC<LeaderBoardItemProps> = ({
+  rank,
+  name,
+  avatarUrl,
+  coins,
+  isCurrentUser,
+}) => {
   return (
     <div
-      className={`flex items-center justify-between p-4 ${
-        isTopTen ? "bg-teal-600 text-white" : "bg-white text-gray-800"
-      } rounded-lg shadow-sm mb-2`}
+      className={`
+        flex items-center justify-between p-4
+        ${
+          isCurrentUser ? "bg-teal-600 text-white" : "bg-gray-100 text-gray-400"
+        }
+        rounded-lg shadow-sm mb-2
+      `}
     >
       <div className="flex items-center space-x-4">
         <div
-          className={`w-8 h-8 flex items-center justify-center font-bold ${
-            isTopTen ? "text-teal-600 bg-white" : "text-white bg-teal-600"
-          } rounded-full`}
+          className={`
+            w-8 h-8 flex items-center justify-center font-bold rounded-full
+            ${
+              isCurrentUser
+                ? "bg-white text-teal-600"
+                : "bg-gray-300 text-gray-500"
+            }
+          `}
         >
           {rank}
         </div>
-
         <div className="flex items-center space-x-3">
           <img
-            src={user.avatar}
-            alt={user.name}
-            className="w-10 h-10 rounded-full object-cover border-2 border-white"
+            src={avatarUrl}
+            alt={name}
+            className="w-10 h-10 rounded-full object-cover border-2"
           />
-
           <div>
-            <p className="font-medium">{user.name}</p>
-            <p
-              className={`text-xs ${
-                isTopTen ? "text-teal-100" : "text-gray-500"
-              }`}
-            >
-              @{user.id}
-            </p>
+            <p className="font-medium">{name}</p>
+            <p className="text-xs">@{name}</p>
           </div>
         </div>
       </div>
-
-      <div className="font-bold">{user.coins} coins</div>
+      <div className="font-bold">{coins} coins</div>
     </div>
   );
 };

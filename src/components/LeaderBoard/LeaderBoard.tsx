@@ -2,52 +2,52 @@ import { useApiQuery } from "@/hooks/useApiQuery";
 import LeaderBoardItem from "./LeaderBoardItem";
 import endpoints from "@/api/endpoints";
 
-interface User {
-  id: string;
-  name: string;
-  avatar: string;
-  username: string;
-  coins: number;
+interface Entry {
+  rank: number;
+  accountId: string;
+  balance: number;
+  twitterHandle: string;
+  avatarUrl: string;
+  isCurrentUser: boolean;
 }
 
-interface LeaderBoardProps {
-  users: User[];
+interface ApiResponse {
+  statusCode: number;
+  data: Entry[];
+  message: string;
+  success: boolean;
 }
 
-const LeaderBoard: React.FC<LeaderBoardProps> = ({ users }) => {
-  const { data, isLoading, isError } = useApiQuery(
+const LeaderBoard: React.FC = () => {
+  const { data, isLoading, isError } = useApiQuery<ApiResponse>(
     endpoints.nigeEarn.leaderboard
   );
 
-  if (isLoading) {
-    return <div>Loading…</div>;
-  }
+  if (isLoading) return <div>Loading…</div>;
+  if (isError || !data) return <div>Error</div>;
 
-  if (isError) {
-    return <div>Error</div>;
-  }
-  console.log(data);
-
-  // Sort users by coins (highest first)
-  const sortedUsers = [...users].sort((a, b) => b.coins - a.coins);
+  const entries = data.data;
+  // top-10 by rank
+  const topTen = entries.filter((e) => e.rank <= 10);
+  // current user entry
+  const me = entries.find((e) => e.isCurrentUser);
+  // if you're outside top-10, append you in 11th
+  const displayList = me && me.rank > 10 ? [...topTen, me] : topTen;
 
   return (
     <div className="p-4">
       <div className="py-6">
         <img src="/leader.png" alt="leader" className="w-full" />
       </div>
-
       <div className="space-y-2">
-        {sortedUsers.slice(0, 10).map((user, index) => (
+        {displayList.map((e) => (
           <LeaderBoardItem
-            key={user.id}
-            rank={index + 1}
-            user={{
-              name: user.name,
-              id: user.username,
-              avatar: user.avatar,
-              coins: user.coins,
-            }}
+            key={e.accountId}
+            rank={e.rank}
+            name={e.twitterHandle}
+            avatarUrl={e.avatarUrl}
+            coins={e.balance}
+            isCurrentUser={e.isCurrentUser}
           />
         ))}
       </div>

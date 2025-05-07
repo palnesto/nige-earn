@@ -35,30 +35,45 @@ const HomePage: React.FC = () => {
   const actionCards = [
     {
       title: "Write Your First Post on X @Nigecoin",
-      gradient: "blue" as const,
-      buttonText: "Get 100XP",
-      icon: <Twitter size={24} />,
+      gradient: "greenBlue" as const,
+      buttonText: "Get N200",
+      icon: <img src="/x.png" alt="Twitter" className="w-28" />,
       action: "twitter-post",
     },
     {
-      title: "Write something and tag us",
-      gradient: "teal" as const,
-      buttonText: "Get 100XP",
-      icon: <PenTool size={24} />,
+      title: "Share your thoughts by quote tweeting any $NIGE tweet.",
+      gradient: "purpleRed" as const,
+      buttonText: "Get +50 coins",
+      icon: <img src="/love.png" alt="Twitter" className="w-28" />,
       action: "tag-post",
     },
     {
-      title: "Share our latest update",
-      gradient: "blue" as const,
-      buttonText: "Get 50XP",
-      icon: <Share size={24} />,
+      title: "Simply like any recent @Nigecoin post to get rewarded.",
+      gradient: "purplePink" as const,
+      buttonText: "Get +50 coins",
+      icon: <img src="/quote.png" alt="Twitter" className="h-full w-52" />,
       action: "share-post",
     },
     {
-      title: "Join the conversation",
-      gradient: "teal" as const,
-      buttonText: "Get 75XP",
-      icon: <MessageCircle size={24} />,
+      title: " Drop a genuine comment under $NIGE’s latest posts.",
+      gradient: "purpleLavender" as const,
+      buttonText: "Get +50 coins",
+      icon: <img src="/Comments.png" alt="Twitter" className="w-28" />,
+      action: "join-conversation",
+    },
+    {
+      title:
+        "Retweet any official $NIGE tweet to support the mission and earn coins.",
+      gradient: "blueTeal" as const,
+      buttonText: "Get +50 coins",
+      icon: <img src="/retweet.png" alt="Twitter" className="w-28" />,
+      action: "join-conversation",
+    },
+    {
+      title: "Share your thoughts by quote tweeting any $NIGE tweet.",
+      gradient: "blueTeal" as const,
+      buttonText: "Get +50 coins",
+      icon: <img src="/quote.png" alt="Twitter" className="w-28" />,
       action: "join-conversation",
     },
   ];
@@ -102,27 +117,19 @@ const HomePage: React.FC = () => {
     },
   ];
 
-  // Action handlers (placeholders)
-  const handleAction = (action: string) => {
-    console.log(`Action triggered: ${action}`);
+  const handleAction = (_action: string) => {
+    window.open("https://x.com/Nigecoin", "_blank", "noopener");
   };
 
   return (
-    <div className="container mx-auto px-10 md:px-6">
-      {/* Action Cards */}
-      <div className="mb-8">
-        <Carousel
-          opts={{
-            align: "start",
-            slidesToScroll: 1,
-          }}
-          className="w-full"
-        >
-          <CarouselContent className="-ml-2 md:-ml-4">
-            {actionCards.map((card, index) => (
+    <div className="container mx-auto px-4 md:px-6">
+      <div className="mb-8 relative">
+        <Carousel className="w-full">
+          <CarouselContent className="flex space-x-4 overflow-x-auto scroll-pl-4">
+            {actionCards.map((card, idx) => (
               <CarouselItem
-                key={index}
-                className="pl-2 md:pl-4 basis-full md:basis-1/2"
+                key={idx}
+                className="flex-shrink-0 w-48 md:w-56 lg:w-60"
               >
                 <ActionCard
                   title={card.title}
@@ -134,14 +141,11 @@ const HomePage: React.FC = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
         </Carousel>
       </div>
 
       {/* Ways to Earn */}
-      <div className="mb-8  ">
-        {/* <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 -z-10" /> */}
+      {/* <div className="mb-8  "> 
         <h2 className="text-xl font-bold mb-4 text-white px-4 pt-4">
           New Ways to Earn
         </h2>
@@ -170,7 +174,7 @@ const HomePage: React.FC = () => {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
-      </div>
+      </div> */}
 
       {/* Recent Activities */}
       <ActivityList activities={activities} />
