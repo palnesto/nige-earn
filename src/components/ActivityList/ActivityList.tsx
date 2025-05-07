@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import ActivityItem from "./ActivityItem";
 import endpoints from "@/api/endpoints";
-import { Pagination } from "@/components/ui/pagination";
+import { Pagination } from "../ui/Pagination";
 
 interface RawActivity {
   _id: string;
