@@ -146,7 +146,7 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
       {/* new */}
 
       <div className="bg-red-500 w-full max-h-[100dvh] min-h-[100dvh] h-[100dvh] overflow-hidden flex flex-col-reverse md:flex-row">
-        <div className="bg-green-500 h-full w-full basis-[0.22] max-h-20 max-w-[dvh] md:max-h-none md:basis-auto md:max-w-64 md:w-64 md:min-w-64">
+        <div className="bg-green-500 h-full w-full max-w-[100dvh] md:basis-auto md:max-w-64 md:w-64 md:min-w-64">
           {/* mobile nav */}
           <div className="block md:hidden">
             <MobileNav />
@@ -157,7 +157,7 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
             <DesktopNav />
           </div>
         </div>
-        <div className="bg-blue-500 h-full w-full max-w-[dvh] md:max-w-none">
+        <div className="bg-blue-500 h-full w-full max-w-[100dvh] md:max-w-none">
           <Main />
         </div>
       </div>
@@ -171,7 +171,7 @@ const DesktopNav = () => {
   return (
     <div className="bg-orange-500 w-full min-h-[100dvh] max-h-[100dvh] flex flex-col">
       <div className="bg-purple-500 h-40 min-h-40 max-h-40 shrink-0">
-        <VeryLargeText />
+        Sidebar Head
       </div>
       <div
         className="bg-cyan-500 overflow-y-auto"
@@ -181,28 +181,28 @@ const DesktopNav = () => {
           height: "calc(100dvh - 21rem)",
         }}
       >
-        <VeryLargeText />
+        Sidebar Body
       </div>
       <div className="bg-amber-500 h-44 min-h-44 max-h-44 shrink-0">
-        <VeryLargeText />
+        Sidebar Footer
       </div>
     </div>
   );
 };
 
 const MobileNav = () => {
-  return <div></div>;
+  return <div className="h-20 bg-yellow-500">Mobile Nav</div>;
 };
 
 const Main = () => {
   return (
-    <div className="bg-teal-500 w-full min-h-[100dvh] max-h-[100dvh] flex justify-center">
-      <div className="bg-red-500 min-h-[100dvh] max-h-[100dvh] flex flex-col w-full max-w-[768px]">
-        <div className="bg-gray-500 h-40 min-h-20 max-h-20 shrink-0">
-          <VeryLargeText />
+    <div className="bg-teal-500 w-full  md:min-h-[100dvh] flex md:justify-center">
+      <div className="flex-col w-full md:max-w-[768px]">
+        <div className="bg-gray-500 h-40 min-h-20 max-h-20 shrink-0 overflow-hidden">
+          Main Head
         </div>
-        <div className="bg-lime-500 overflow-y-auto main-ht">
-          <VeryLargeText />
+        <div className="bg-lime-500 overflow-y-auto main-ht w-full">
+          Main Body
         </div>
       </div>
     </div>
