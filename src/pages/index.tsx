@@ -1,12 +1,9 @@
 import ActionCard from "@/components/ui/ActionCard";
 import ActivityList from "@/components/ActivityList/ActivityList";
-import { Twitter, PenTool, Share, MessageCircle } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/Carousel";
 
 const HomePage: React.FC = () => {
