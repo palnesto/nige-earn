@@ -15,9 +15,8 @@ app.render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Toaster />
-        <MaxWidthContainer>
-          <App />
-        </MaxWidthContainer>
+
+        <App />
       </BrowserRouter>
     </QueryClientProvider>
   </StrictMode>

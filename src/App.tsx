@@ -18,6 +18,7 @@ export function App() {
     <Suspense fallback={<p>Loading…</p>}>
       {isPublic ? (
         // Public pages render straight
+
         appRoutes
       ) : (
         // All other pages are wrapped in PrivateRoute + AppLayout

@@ -12,7 +12,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#00857F] flex flex-col items-center relative overflow-hidden">
+    <div className="bg-[#00857F] h-[100dvh] flex flex-col items-center relative">
       {/* Logo / hero */}
       <div className="flex-1 w-full flex flex-col items-center justify-between pt-12 relative">
         <div className="flex flex-col items-center gap-2">
@@ -34,8 +34,14 @@ export default function LoginPage() {
       </div>
 
       {/* Auth box */}
-      <div className="w-full flex items-center justify-center relative">
-        <div className="bg-gradient-to-b from-[#206562] via-[#00857F] to-transparent absolute z-10 w-full h-32 top-0" />
+      <div className="w-full flex items-center justify-center relative fixed bottom-0">
+        <div
+          style={{
+            background:
+              "linear-gradient(0deg, rgba(32, 101, 98, 0) 11.88%, #00857F 93.8%)",
+          }}
+          className="bg-gradient-to-t to-transparent absolute z-10 w-full h-32 top-0 "
+        />
         <img
           src="/bg2.png"
           alt=""

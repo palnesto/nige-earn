@@ -134,3 +134,17 @@
 .highcharts-scrollbar-track {
   display: none;
 }
+
+.main-ht {
+  max-height: calc(100dvh - 10rem);
+  min-height: calc(100dvh - 10rem);
+  height: calc(100dvh - 10rem);
+}
+
+@media (min-width: 768px) {
+  .main-ht {
+    max-height: calc(100dvh - 5rem);
+    min-height: calc(100dvh - 5rem);
+    height: calc(100dvh - 5rem);
+  }
+}
