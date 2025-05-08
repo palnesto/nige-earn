@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "dotenv -e src/env/.env.local vite",
-    "dev:test": "dotenv -e src/env/.env.local vite",
+    "dev": "dotenv -e src/env/.env.local vite --port 5173",
+    "dev:test": "dotenv -e src/env/.env.local vite --port 5173",
     "build": "dotenv -e /app/src/env/.env.prod vite build",
     "lint": "eslint .",
     "preview": "dotenv -e src/env/.env.local vite preview"
