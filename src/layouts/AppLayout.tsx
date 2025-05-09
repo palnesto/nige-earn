@@ -200,11 +200,11 @@ const Main = ({ children }: { children: ReactNode }) => {
   return (
     <div className="w-full  md:min-h-[100dvh] flex md:justify-center">
       <div className="flex-col w-full md:max-w-[768px] lg:max-w-[1024px]">
-        <div className="h-40 min-h-20 max-h-20 shrink-0 overflow-hidden">
+        <div className="h-40 min-h-20 max-h-20 shrink-0 overflow-hidden shadow-md">
           <MainHead />
         </div>
         <div className="@lg/main:flex overflow-y-auto main-ht w-full">
-          <div className="w-full">{children}</div>
+          <div className="w-full pt-4">{children}</div>
         </div>
       </div>
     </div>
@@ -216,19 +216,17 @@ const MainHead = () => {
   console.log("user", user);
   return (
     <div className="h-full w-full px-6 flex items-center justify-between">
-      <div className="flex items-center">
-        <div>
-          <p className="text-gray-500 text-sm">Hello,</p>
-          <h1 className="text-xl font-bold text-gray-800">
-            {user?.profile?.username ?? "default"}
-          </h1>
-        </div>
+      <div className="flex flex-col">
+        <p className="text-gray-500 text-sm">Hello,</p>
+        <h1 className="text-lg sm:text-xl font-bold text-gray-800">
+          {user?.profile?.username ?? "default"}
+        </h1>
       </div>
 
       <div className="flex items-center">
         <div className="flex items-center">
-          <span className=" ">{user?.account?.balance ?? "null"}</span>
-          <img src="/nigecoin.gif" alt="Coin" className="w-16" />
+          <span className="text-sm">{user?.account?.balance ?? "null"}</span>
+          <img src="/nigecoin.gif" alt="Coin" className="w-14 sm:w-16" />
         </div>
 
         {/* <div className="relative">
@@ -240,7 +238,7 @@ const MainHead = () => {
         </div> */}
 
         <div className="relative">
-          <img src="/Bell.png" className=" " />
+          <img src="/Bell.png" className="w-8" />
 
           <span className="absolute -top-1 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
             {"3"}
