@@ -200,7 +200,7 @@ const Main = ({ children }: { children: ReactNode }) => {
   return (
     <div className="w-full  md:min-h-[100dvh] flex md:justify-center">
       <div className="flex-col w-full md:max-w-[768px] lg:max-w-[1024px]">
-        <div className="h-40 min-h-20 max-h-20 shrink-0 overflow-hidden shadow-md">
+        <div className="h-40 min-h-20 max-h-20 shrink-0 overflow-hidden shadow-lg md:rounded-full">
           <MainHead />
         </div>
         <div className="@lg/main:flex overflow-y-auto main-ht w-full">
@@ -225,7 +225,9 @@ const MainHead = () => {
 
       <div className="flex items-center">
         <div className="flex items-center">
-          <span className="text-sm">{user?.account?.balance ?? "null"}</span>
+          <span className="text-sm sm:text-base font-bold">
+            {user?.account?.balance ?? "null"}
+          </span>
           <img src="/nigecoin.gif" alt="Coin" className="w-14 sm:w-16" />
         </div>
 

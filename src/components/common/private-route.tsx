@@ -18,7 +18,11 @@ export function PrivateRoute({ children }: { children: JSX.Element }) {
 
   // 2) While it’s loading, show a placeholder
   if (isLoading) {
-    return <div className="p-6 text-center">Checking session…</div>;
+    return (
+      <div className="p-6 fixed inset-0 flex items-center justify-center">
+        <img src="/nigecoin.gif" alt="" className="w-28" />
+      </div>
+    );
   }
 
   // 3) If it errored or returned no user, clear state + redirect

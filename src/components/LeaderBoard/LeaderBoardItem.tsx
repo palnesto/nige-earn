@@ -23,7 +23,7 @@ const LeaderBoardItem: React.FC<LeaderBoardItemProps> = ({
         rounded-lg shadow-sm mb-2
       `}
     >
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2 sm:space-x-4">
         <div
           className={`
             w-8 h-8 flex items-center justify-center font-bold rounded-full

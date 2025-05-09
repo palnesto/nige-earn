@@ -184,7 +184,7 @@ const ActivityList: React.FC = () => {
   return (
     <div className="mt-6">
       <h2 className="text-xl font-bold mb-4">Recent Activities</h2>
-      <div className="space-y-2">
+      <div className="space-y-5">
         {slice.map((act) => {
           const { icon, label, description, cardClass } = getDetails(act);
           return (
