@@ -84,11 +84,7 @@ const LeaderBoardPage = () => {
     },
   ];
 
-  return (
-    <div className="pb-20 md:pb-6">
-      <LeaderBoard users={users} />
-    </div>
-  );
+  return <LeaderBoard users={users} />;
 };
 
 export default LeaderBoardPage;

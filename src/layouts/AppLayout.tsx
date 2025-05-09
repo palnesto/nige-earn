@@ -2,13 +2,17 @@ import { ReactNode } from "react";
 import { Home, Trophy, User, Clock } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+
+import { AppSidebar } from "@/components/AppSidebar/AppSidebar";
 
 const AppLayout = ({ children }: { children: ReactNode }) => {
   const user = useAuthStore((s) => s.user);
   console.log("user", user);
 
   return (
-    <>
+    <SidebarProvider>
       {/* <div className="flex min-h-screen bg-gray-50">
         
         <Sidebar />
@@ -37,7 +41,9 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
       {/* new */}
 
       <div className="w-full max-h-[100dvh] min-h-[100dvh] h-[100dvh] overflow-hidden flex flex-col-reverse md:flex-row">
-        <div className="h-full w-full max-w-[100dvh] md:basis-auto md:max-w-64 md:w-64 md:min-w-64">
+        <div className="h-full w-full md:basis-auto md:max-w-64 md:w-64 md:min-w-64">
+          {/* ← Mobile drawer lives here */}
+          <AppSidebar />
           {/* mobile nav */}
           <div className="block md:hidden">
             <MobileNav />
@@ -48,11 +54,11 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
             <DesktopNav />
           </div>
         </div>
-        <div className="@container/main h-full w-full max-w-[100dvh] md:max-w-none">
+        <div className="@container/main h-full w-full md:max-w-none">
           <Main>{children}</Main>
         </div>
       </div>
-    </>
+    </SidebarProvider>
   );
 };
 
@@ -153,17 +159,22 @@ const MobileNav = () => {
         </span>
       </Link>
 
-      <Link
+      {/* <Link
         to="/profile"
         className={`flex flex-col items-center justify-center ${
           path === "/profile" ? "text-teal-600" : "text-gray-500"
         }`}
-      >
-        <User size={24} />
+      > */}
+      {/* <User size={24} />
         <span className={`text-xs mt-1 ${path === "/profile" ? "" : "hidden"}`}>
           Profile
-        </span>
-      </Link>
+        </span> */}
+      <SidebarTrigger>
+        <Button variant="ghost" size="icon" className="md:hidden">
+          {/* <User size={28} /> */}
+        </Button>
+      </SidebarTrigger>
+      {/* </Link> */}
     </div>
   );
 };
@@ -176,7 +187,7 @@ const Main = ({ children }: { children: ReactNode }) => {
           <MainHead />
         </div>
         <div className="@lg/main:flex overflow-y-auto main-ht w-full">
-          {children}
+          <div className="w-full">{children}</div>
         </div>
       </div>
     </div>
