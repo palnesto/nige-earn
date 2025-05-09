@@ -291,15 +291,15 @@ const HomePage: React.FC = () => {
           className="w-full pb-2"
         >
           {/* LEFT / RIGHT BUTTONS */}
-          <CarouselPrevious className="ml-7 z-10" />
-          <CarouselNext className="mr-7 z-10" />
+          <CarouselPrevious className="ml-8 xs:ml-7 z-10" />
+          <CarouselNext className="mr-8 xs:mr-7 z-10" />
 
           <CarouselContent className="-ml-2 lg:-ml-4">
             {actionCards.map((card, idx) => (
               <CarouselItem
                 key={idx}
                 /* one card on mobile, two cards from lg up */
-                className="sm:pl-6 sm:pr-4 lg:pl-9 lg:pr-7 basis-full lg:basis-1/2"
+                className="pl-6 pr-5 sm:pl-6 sm:pr-4 lg:pl-9 lg:pr-7 basis-full lg:basis-1/2"
               >
                 <ActionCard
                   title={card.title}

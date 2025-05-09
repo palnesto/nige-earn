@@ -34,20 +34,19 @@ const ActionCard: React.FC<ActionCardProps> = ({
       className={`
         ${gradientClasses[gradient]}
         relative rounded-xl p-5 text-white
-        h-36 flex flex-col justify-start
+        h-36 flex justify-between items-center
         cursor-pointer overflow-hidden
       `}
     >
-      {/* badge + icon row */}
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col justify-between items-start">
         <span className="inline-block bg-white text-xs font-bold px-3 py-1 rounded-full text-green-700">
           {buttonText}
         </span>
-        {icon && <div className="w-10 h-10">{icon}</div>}
+        <h3 className="mt-4 text-sm sm:text-lg lg:text-base xl:text-lg font-semibold leading-snug">
+          {title}
+        </h3>
       </div>
-
-      {/* title */}
-      <h3 className="mt-4 text-lg font-semibold leading-snug">{title}</h3>
+      {icon && <div className="h-full">{icon}</div>}
     </div>
   );
 };
