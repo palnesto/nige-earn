@@ -215,11 +215,12 @@ const MainHead = () => {
   const user = useAuthStore((s) => s.user);
   console.log("user", user);
   return (
-    <div className="h-full w-full px-6 flex items-center justify-between">
+    <div className="h-full w-full px-6 flex justify-between items-end pb-3">
       <div className="flex flex-col">
-        <p className="text-gray-500 text-sm">Hello,</p>
-        <h1 className="text-lg sm:text-xl font-bold text-gray-800">
-          {user?.profile?.username ?? "default"}
+        <p className="text-gray-500 text-xs sm:text-sm">Hello,</p>
+        <h1 className="text-base sm:text-xl font-bold text-gray-800 max-w-[10rem] overflow-hidden whitespace-nowrap truncate">
+          {user?.profile?.username ??
+            "defaujhgggggghhhhhhhhhjjjjjjjjjjjjjjjjjjjjjjjjjjjhhlt"}
         </h1>
       </div>
 
