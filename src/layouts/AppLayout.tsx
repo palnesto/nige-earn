@@ -219,8 +219,7 @@ const MainHead = () => {
       <div className="flex flex-col">
         <p className="text-gray-500 text-xs sm:text-sm">Hello,</p>
         <h1 className="text-base sm:text-xl font-bold text-gray-800 max-w-[10rem] overflow-hidden whitespace-nowrap truncate">
-          {user?.profile?.username ??
-            "defaujhgggggghhhhhhhhhjjjjjjjjjjjjjjjjjjjjjjjjjjjhhlt"}
+          {user?.profile?.username ?? "default"}
         </h1>
       </div>
 
