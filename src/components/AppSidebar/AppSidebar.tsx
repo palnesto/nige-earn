@@ -1,12 +1,10 @@
-import { Home, Trophy, Clock } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Home, Trophy, Clock, LogOut, Send } from "lucide-react";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 import {
   Sidebar,
-  SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -17,41 +15,41 @@ import {
  * Hidden at md and above.
  */
 export function AppSidebar() {
-  const { pathname } = useLocation();
-  const items = [
-    { title: "Home", url: "/", icon: Home },
-    { title: "Leader Board", url: "/leader-board", icon: Trophy },
-    { title: "Coming Soon", url: "/coming-soon", icon: Clock },
-  ];
+  const logout = useAuthStore((s) => s.logout);
 
   return (
-    <Sidebar side="right" className="md:hidden md:w-64">
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Menu</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      to={item.url}
-                      className={`flex items-center gap-3 p-2 ${
-                        pathname === item.url
-                          ? "text-teal-600 font-medium"
-                          : "hover:text-teal-600"
-                      }`}
-                    >
-                      <item.icon size={18} />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
+    <Sidebar side="right" className="md:hidden w-64 flex flex-col">
+      {/* Support & Logout actions at bottom */}
+      <SidebarGroup>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <a
+                  href="https://t.me/ivan_sriv"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-2 hover:text-teal-600"
+                >
+                  <Send />
+                  <span className="text-lg">Support</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-3 p-2 hover:text-red-500 "
+                >
+                  <LogOut />
+                  <span className="text-lg">Logout</span>
+                </button>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
     </Sidebar>
   );
 }

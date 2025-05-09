@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Home, Trophy, User, Clock } from "lucide-react";
+import { Home, Trophy, Clock, Send, LogOut } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -119,10 +119,27 @@ const DesktopNav = () => {
           <span className="font-medium">Coming Soon</span>
         </Link>
       </div>
-      <div className="h-44 min-h-44 max-h-44 shrink-0">
-        <figure className="bg-gradient-to-b from-[#206562 ] via-[#00857F] to-transparent  ">
+      <div className="h-44 min-h-44 max-h-44 shrink-0 relative">
+        <figure className="bg-gradient-to-b from-[#206562 ] via-[#00857F] to-transparent ">
           <img src="/bg2.png" alt="NigeCoin" className="w-full" />
         </figure>
+        <div className="absolute bottom-1/4 flex flex-col space-y-2 px-7 w-52">
+          <button
+            onClick={() => window.open("https://t.me/ivan_sriv", "_blank")}
+            className="p-2 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30 transition flex items-center justify-around text-white"
+            aria-label="Support"
+          >
+            <Send className="w-5 h-5" />
+            <span>Support</span>
+          </button>
+          <button
+            className="p-2 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30 transition flex items-center justify-around text-white"
+            aria-label="Logout"
+          >
+            <LogOut className="w-5 h-5" />
+            <span>Logout</span>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -182,7 +199,7 @@ const MobileNav = () => {
 const Main = ({ children }: { children: ReactNode }) => {
   return (
     <div className="w-full  md:min-h-[100dvh] flex md:justify-center">
-      <div className="flex-col w-full md:max-w-[768px]">
+      <div className="flex-col w-full md:max-w-[768px] lg:max-w-[1024px]">
         <div className="h-40 min-h-20 max-h-20 shrink-0 overflow-hidden">
           <MainHead />
         </div>
