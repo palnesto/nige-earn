@@ -4,7 +4,11 @@ import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { AppSidebar } from "@/components/AppSidebar/AppSidebar";
 
 const AppLayout = ({ children }: { children: ReactNode }) => {
@@ -239,13 +243,26 @@ const MainHead = () => {
           />
         </div> */}
 
-        <div className="relative">
+        {/* <div className="relative">
           <img src="/Bell.png" className="w-8" />
 
           <span className="absolute -top-1 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-            {"3"}
+            {"0"}
           </span>
-        </div>
+        </div> */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <button className="relative" aria-label="Notifications">
+              <img src="/Bell.png" className="w-8 cursor-pointer" alt="Bell" />
+              <span className="absolute -top-1 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                0
+              </span>
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-48 p-2">
+            <p>No notifications for now</p>
+          </PopoverContent>
+        </Popover>
       </div>
     </div>
   );
