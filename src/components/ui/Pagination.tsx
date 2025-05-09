@@ -1,10 +1,13 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
-
 import { cn } from "@/utils/utils";
 import { ButtonProps, buttonVariants } from "@/components/ui/button";
 
-const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
+/* ───── Low-level primitives (unchanged) ───────── */
+export const Pagination = ({
+  className,
+  ...props
+}: React.ComponentProps<"nav">) => (
   <nav
     role="navigation"
     aria-label="pagination"
@@ -14,19 +17,19 @@ const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
 );
 Pagination.displayName = "Pagination";
 
-const PaginationContent = React.forwardRef<
+export const PaginationContent = React.forwardRef<
   HTMLUListElement,
   React.ComponentProps<"ul">
 >(({ className, ...props }, ref) => (
   <ul
     ref={ref}
-    className={cn("flex flex-row items-center gap-1", className)}
+    className={cn("flex items-center gap-1", className)}
     {...props}
   />
 ));
 PaginationContent.displayName = "PaginationContent";
 
-const PaginationItem = React.forwardRef<
+export const PaginationItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentProps<"li">
 >(({ className, ...props }, ref) => (
@@ -39,7 +42,7 @@ type PaginationLinkProps = {
 } & Pick<ButtonProps, "size"> &
   React.ComponentProps<"a">;
 
-const PaginationLink = ({
+export const PaginationLink = ({
   className,
   isActive,
   size = "icon",
@@ -59,7 +62,7 @@ const PaginationLink = ({
 );
 PaginationLink.displayName = "PaginationLink";
 
-const PaginationPrevious = ({
+export const PaginationPrevious = ({
   className,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) => (
@@ -70,12 +73,12 @@ const PaginationPrevious = ({
     {...props}
   >
     <ChevronLeft className="h-4 w-4" />
-    <span>Previous</span>
+    <span>Prev</span>
   </PaginationLink>
 );
 PaginationPrevious.displayName = "PaginationPrevious";
 
-const PaginationNext = ({
+export const PaginationNext = ({
   className,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) => (
@@ -91,7 +94,7 @@ const PaginationNext = ({
 );
 PaginationNext.displayName = "PaginationNext";
 
-const PaginationEllipsis = ({
+export const PaginationEllipsis = ({
   className,
   ...props
 }: React.ComponentProps<"span">) => (
@@ -106,12 +109,104 @@ const PaginationEllipsis = ({
 );
 PaginationEllipsis.displayName = "PaginationEllipsis";
 
-export {
-  Pagination,
-  PaginationContent,
-  PaginationLink,
-  PaginationItem,
-  PaginationPrevious,
-  PaginationNext,
-  PaginationEllipsis,
+/* ───── High-level “boxes” paginator ───────── */
+interface PaginatorProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  surround?: number; // how many neighbouring page boxes to show
+}
+
+export const Paginator: React.FC<PaginatorProps> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  surround = 1,
+}) => {
+  if (!totalPages || totalPages < 2) return null;
+
+  const makePageArr = (): (number | "ellipsis")[] => {
+    const pages: (number | "ellipsis")[] = [];
+    const first = 1;
+    const last = totalPages;
+
+    const left = Math.max(first, currentPage - surround);
+    const right = Math.min(last, currentPage + surround);
+
+    // always show first
+    pages.push(first);
+
+    // left ellipsis
+    if (left > first + 1) pages.push("ellipsis");
+
+    // middle pages
+    for (let i = left; i <= right; i++) {
+      if (i !== first && i !== last) pages.push(i);
+    }
+
+    // right ellipsis
+    if (right < last - 1) pages.push("ellipsis");
+
+    // always show last
+    if (last !== first) pages.push(last);
+
+    return pages;
+  };
+
+  const pageArray = makePageArr();
+
+  const handleClick = (p: number) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (p !== currentPage) onPageChange(p);
+  };
+
+  return (
+    <Pagination>
+      <PaginationContent>
+        {/* Prev */}
+        <PaginationItem>
+          <PaginationPrevious
+            href="#"
+            onClick={handleClick(Math.max(1, currentPage - 1))}
+            aria-disabled={currentPage === 1}
+            className={
+              currentPage === 1 ? "pointer-events-none opacity-50" : ""
+            }
+          />
+        </PaginationItem>
+
+        {/* Number boxes + ellipses */}
+        {pageArray.map((p, idx) =>
+          p === "ellipsis" ? (
+            <PaginationItem key={`e-${idx}`}>
+              <PaginationEllipsis />
+            </PaginationItem>
+          ) : (
+            <PaginationItem key={p}>
+              <PaginationLink
+                href="#"
+                isActive={p === currentPage}
+                onClick={handleClick(p)}
+              >
+                {p}
+              </PaginationLink>
+            </PaginationItem>
+          )
+        )}
+
+        {/* Next */}
+        <PaginationItem>
+          <PaginationNext
+            href="#"
+            onClick={handleClick(Math.min(totalPages, currentPage + 1))}
+            aria-disabled={currentPage === totalPages}
+            className={
+              currentPage === totalPages ? "pointer-events-none opacity-50" : ""
+            }
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  );
 };
+Paginator.displayName = "Paginator";

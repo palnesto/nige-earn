@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import ActivityItem from "./ActivityItem";
 import endpoints from "@/api/endpoints";
-import { Pagination } from "../ui/Pagination";
+import { Paginator } from "@/components/ui/Pagination";
 
 interface RawActivity {
   _id: string;
@@ -65,12 +65,13 @@ const ActivityList: React.FC = () => {
           label: "You liked a post",
           description: link ? (
             <p className="text-[0.55rem] sm:text-xs text-gray-600">
-              You liked an official $NIGE tweet.
+              You liked an official NIGE tweet.
+              <br className="xs:hidden" />
               <a
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-600 border px-1 sm:px-2 sm:py-1 rounded-md"
+                className="font-medium text-blue-600 border px-1 sm:px-2 py-1 rounded-md"
               >
                 View Tweet
               </a>
@@ -84,7 +85,7 @@ const ActivityList: React.FC = () => {
           label: "You retweeted a post",
           description: link ? (
             <p className="text-[0.55rem] sm:text-xs text-gray-600">
-              You retweeted an official $NIGE tweet.{" "}
+              You retweeted an official NIGE tweet. <br className="xs:hidden" />
               <a
                 href={link}
                 target="_blank"
@@ -102,8 +103,9 @@ const ActivityList: React.FC = () => {
           icon: <img src="/quote.png" alt="Quote" className="w-7 h-7" />,
           label: "You quote tweeted",
           description: link ? (
-            <p className="text-gray-600 text-[0.55rem] sm:text-xs">
-              You quote tweeted an official $NIGE tweet.{" "}
+            <p className="text-gray-600 text-[0.55rem] sm:text-xs space-x-1 space-y-1">
+              You quote tweeted an official NIGE tweet.
+              <br className="xs:hidden" />
               <a
                 href={link}
                 target="_blank"
@@ -122,7 +124,8 @@ const ActivityList: React.FC = () => {
           label: `You mentioned @Nigecoin`,
           description: link ? (
             <p className="text-[0.55rem] sm:text-xs text-gray-600">
-              You mentioned @Nigecoin in an official $NIGE tweet.{" "}
+              You mentioned @Nigecoin in an official NIGE tweet.{" "}
+              <br className="xs:hidden" />
               <a
                 href={link}
                 target="_blank"
@@ -141,7 +144,8 @@ const ActivityList: React.FC = () => {
           label: `You used #${act.meta.tag}`,
           description: link ? (
             <p className="text-[0.55rem] sm:text-xs text-gray-600">
-              You used #{act.meta.tag} in an official $NIGE tweet.{" "}
+              You used #{act.meta.tag} in an official NIGE tweet.{" "}
+              <br className="xs:hidden" />
               <a
                 href={link}
                 target="_blank"
@@ -160,7 +164,8 @@ const ActivityList: React.FC = () => {
           label: "You replied to a post",
           description: link ? (
             <p className="text-[0.55rem] sm:text-xs text-gray-600">
-              You replied to an official $NIGE tweet.{" "}
+              You replied to an official NIGE tweet.{" "}
+              <br className="xs:hidden" />
               <a
                 href={link}
                 target="_blank"
@@ -196,7 +201,7 @@ const ActivityList: React.FC = () => {
         })}
       </div>
       <div className="mt-6 flex justify-center">
-        <Pagination
+        <Paginator
           currentPage={page}
           totalPages={pageCount}
           onPageChange={setPage}

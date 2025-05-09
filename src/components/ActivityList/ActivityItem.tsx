@@ -23,11 +23,11 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
         <div>{icon}</div>
         <div>
           <p className="font-medium text-gray-800">{label}</p>
-          {description}
+          <span className="leading-loose">{description}</span>
         </div>
       </div>
       <div className="flex flex-col items-end">
-        <span className="text-[0.6rem] sm:text-sm font-semibold text-gray-900 mb-1">
+        <span className="text-xs sm:text-base font-semibold text-gray-900 mb-1">
           {amount} coins
         </span>
         <span className="text-[0.5rem] sm:text-sm text-gray-500">
