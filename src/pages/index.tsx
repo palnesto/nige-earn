@@ -139,7 +139,7 @@ const actionCards = [
 /* ─────────────────────────  PAGE  ───────────────────────── */
 const HomePage: React.FC = () => {
   const handleAction = () =>
-    window.open("https://x.com/Nigeearn", "_blank", "noopener");
+    window.open("https://x.com/Nigecoin", "_blank", "noopener");
 
   /* capture Embla API to drive dot indicators */
   const [api, setApi] = React.useState<CarouselApi | null>(null);
