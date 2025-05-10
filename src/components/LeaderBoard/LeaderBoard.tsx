@@ -102,7 +102,7 @@ const LeaderBoard: React.FC = () => {
   return (
     <div className="p-4">
       <div className="pb-6">
-        <img src="/leader.png" alt="leader" className="w-full" />
+        <img src="/leader.jpeg" alt="leader" className="w-full" />
       </div>
       <div className="space-y-2">
         {displayList.map((e) => (
