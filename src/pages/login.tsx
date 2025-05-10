@@ -16,8 +16,8 @@ export default function LoginPage() {
       {/* Logo / hero */}
       <div className="flex-1 w-full flex flex-col items-center justify-between pt-12 relative">
         <div className="flex flex-col items-center gap-2">
-          <img src="/eagle.png" alt="NigeCoin" className="w-24" />
-          <span className="text-2xl font-bold text-white">NigeCoin</span>
+          <img src="/eagle.png" alt="Nigearn" className="w-24" />
+          <span className="text-2xl font-bold text-white">NigeEarn</span>
         </div>
 
         <div className="relative">
@@ -52,7 +52,7 @@ export default function LoginPage() {
             Sign in for rewards
           </h2>
           <p className="text-center text-white opacity-80 mb-8">
-            Complete tasks and earn rewards from Nigecoin
+            Complete tasks and earn rewards from Nigeearn
           </p>
 
           <Button

@@ -26,7 +26,7 @@ export function AppSidebar() {
             <div className="p-6 flex flex-col items-center justify-center h-full">
               <img src="/eagle.png" alt="Eagle icon" className="h-32" />
               <span className="text-4xl tracking-wider font-bold text-white">
-                NigeCoin
+                NigeEarn
               </span>
             </div>
           </div>
@@ -60,7 +60,7 @@ export function AppSidebar() {
         <figure className="bg-gradient-to-b from-[#206562 ] via-[#00857F] to-transparent w-full">
           <img
             src="/bg2.png"
-            alt="NigeCoin"
+            alt="Nigeearn"
             className="w-full object-cover h-full"
           />
         </figure>

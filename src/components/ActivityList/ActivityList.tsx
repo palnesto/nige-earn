@@ -121,10 +121,10 @@ const ActivityList: React.FC = () => {
       case "mention":
         return {
           icon: <img src="/at.png" alt="Mention" className="h-7 w-7" />,
-          label: `You mentioned @Nigecoin`,
+          label: `You mentioned @Nigeearn`,
           description: link ? (
             <p className="text-[0.55rem] sm:text-xs text-gray-600">
-              You mentioned @Nigecoin in an official NIGE tweet.{" "}
+              You mentioned @Nigeearn in an official NIGE tweet.{" "}
               <br className="xs:hidden" />
               <a
                 href={link}

@@ -76,7 +76,7 @@ const DesktopNav = () => {
       <div className="h-40 min-h-40 max-h-40 shrink-0">
         <div className="p-6 flex items-center justify-center h-full">
           <img src="/eagle.png" alt="Eagle icon" className="h-12" />
-          <span className="text-2xl font-bold text-white">NigeCoin</span>
+          <span className="text-2xl font-bold text-white">NigeEarn</span>
         </div>
       </div>
       <div
@@ -125,7 +125,7 @@ const DesktopNav = () => {
       </div>
       <div className="h-44 min-h-44 max-h-44 shrink-0 relative">
         <figure className="bg-gradient-to-b from-[#206562 ] via-[#00857F] to-transparent ">
-          <img src="/bg2.png" alt="NigeCoin" className="w-full" />
+          <img src="/bg2.png" alt="NigeEarn" className="w-full" />
         </figure>
         <div className="absolute bottom-1/4 flex flex-col space-y-2 px-7 w-52">
           <button
