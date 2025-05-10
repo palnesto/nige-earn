@@ -121,10 +121,10 @@ const ActivityList: React.FC = () => {
       case "mention":
         return {
           icon: <img src="/at.png" alt="Mention" className="h-7 w-7" />,
-          label: `You mentioned @Nigeearn`,
+          label: `You mentioned @Nigecoin`,
           description: link ? (
             <p className="text-[0.55rem] sm:text-xs text-gray-600">
-              You mentioned @Nigeearn in an official NIGE tweet.{" "}
+              You mentioned @Nigecoin in an official NIGE tweet.{" "}
               <br className="xs:hidden" />
               <a
                 href={link}
@@ -183,6 +183,10 @@ const ActivityList: React.FC = () => {
 
   return (
     <div className="mt-6">
+      <div className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 text-xs sm:text-sm rounded-full mb-5">
+        Kindly note that your points will be updated and reflected in your
+        account within a few hours.
+      </div>
       <h2 className="text-xl font-bold mb-4">Recent Activities</h2>
       <div className="space-y-5">
         {slice.map((act) => {

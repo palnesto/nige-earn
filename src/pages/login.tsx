@@ -17,7 +17,7 @@ export default function LoginPage() {
       <div className="flex-1 w-full flex flex-col items-center justify-between pt-12 relative">
         <div className="flex flex-col items-center gap-2">
           <img src="/eagle.png" alt="Nigearn" className="w-24" />
-          <span className="text-2xl font-bold text-white">NigeEarn</span>
+          <span className="text-2xl font-bold text-white tracki">NigeEarn</span>
         </div>
 
         <div className="relative">

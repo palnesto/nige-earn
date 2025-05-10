@@ -8,7 +8,8 @@ interface ActionCardProps {
     | "purpleRed"
     | "purplePink"
     | "purpleLavender"
-    | "blueTeal";
+    | "blueTeal"
+    | "tealblue";
   buttonText: string;
   onAction: () => void;
 }
@@ -26,6 +27,7 @@ const ActionCard: React.FC<ActionCardProps> = ({
     purplePink: "bg-gradient-to-r from-purple-600 to-pink-500",
     purpleLavender: "bg-gradient-to-r from-purple-800 to-purple-300",
     blueTeal: "bg-gradient-to-r from-blue-700 to-teal-400",
+    tealblue: "bg-gradient-to-r from-green-500 to-blue-500",
   };
 
   return (
@@ -46,7 +48,9 @@ const ActionCard: React.FC<ActionCardProps> = ({
           {title}
         </h3>
       </div>
-      {icon && <div className="h-full">{icon}</div>}
+      {icon && (
+        <div className="flex items-center justify-center h-full">{icon}</div>
+      )}
     </div>
   );
 };

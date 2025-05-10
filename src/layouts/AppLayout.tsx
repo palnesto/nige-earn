@@ -58,6 +58,7 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
             <DesktopNav />
           </div>
         </div>
+
         <div className="@container/main h-full w-full md:max-w-none">
           <Main>{children}</Main>
         </div>
@@ -108,7 +109,7 @@ const DesktopNav = () => {
           }`}
         >
           <Trophy size={20} className="mr-3" />
-          <span className="font-medium">Leader Board</span>
+          <span className="font-medium">LeaderBoard</span>
         </Link>
 
         <Link
