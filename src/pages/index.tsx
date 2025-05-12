@@ -9,6 +9,8 @@ import {
   CarouselNext,
   type CarouselApi,
 } from "@/components/ui/Carousel";
+import { useApiQuery } from "@/hooks/useApiQuery";
+import endpoints from "@/api/endpoints";
 
 /* ─────────────────────────  MOCK DATA  ───────────────────────── */
 const activities = [
@@ -138,6 +140,8 @@ const actionCards = [
 
 /* ─────────────────────────  PAGE  ───────────────────────── */
 const HomePage: React.FC = () => {
+  const { data } = useApiQuery(endpoints.nigeEarn.rewards.list);
+  console.log("data", data);
   const handleAction = () =>
     window.open("https://x.com/Nigecoin", "_blank", "noopener");
 

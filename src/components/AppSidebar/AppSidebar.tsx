@@ -1,5 +1,4 @@
 import { LogOut, Send } from "lucide-react";
-import { useAuthStore } from "@/stores/useAuthStore";
 
 import {
   Sidebar,
@@ -9,14 +8,25 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useApiMutation } from "@/hooks/useApiMutation";
+import endpoints from "@/api/endpoints";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Mobile-only drawer (right side).
  * Hidden at md and above.
  */
 export function AppSidebar() {
-  const logout = useAuthStore((s) => s.logout);
-
+  const navigate = useNavigate();
+  const { mutate: logoutMutate, isPending: isLogoutPending } = useApiMutation({
+    route: endpoints?.globalRoutes.auth.logout,
+    method: "POST",
+    onSuccess: () => {
+      toast.success("Logged out");
+      navigate(0);
+    },
+  });
   return (
     <Sidebar side="right" className="md:hidden w- flex flex-col h-full">
       {/* Support & Logout actions at bottom */}
@@ -47,7 +57,10 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
                 <button
-                  onClick={logout}
+                  disabled={isLogoutPending}
+                  onClick={() => {
+                    logoutMutate({});
+                  }}
                   className="gap-3 p-2 hover:text-red-500 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30 flex items-center justify-around w-32"
                 >
                   <LogOut />

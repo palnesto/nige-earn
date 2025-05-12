@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Home, Trophy, Clock, Send, LogOut } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,9 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { AppSidebar } from "@/components/AppSidebar/AppSidebar";
+import { useApiMutation } from "@/hooks/useApiMutation";
+import endpoints from "@/api/endpoints";
+import toast from "react-hot-toast";
 
 const AppLayout = ({ children }: { children: ReactNode }) => {
   const user = useAuthStore((s) => s.user);
@@ -70,6 +73,15 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
 export default AppLayout;
 
 const DesktopNav = () => {
+  const navigate = useNavigate();
+  const { mutate: logoutMutate, isPending: isLogoutPending } = useApiMutation({
+    route: endpoints?.globalRoutes.auth.logout,
+    method: "POST",
+    onSuccess: () => {
+      toast.success("Logged out");
+      navigate(0);
+    },
+  });
   const location = useLocation();
   const path = location.pathname;
   return (
@@ -140,6 +152,10 @@ const DesktopNav = () => {
           <button
             className="p-2 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30 transition flex items-center justify-around text-white"
             aria-label="Logout"
+            disabled={isLogoutPending}
+            onClick={() => {
+              logoutMutate({});
+            }}
           >
             <LogOut className="w-5 h-5" />
             <span>Logout</span>
