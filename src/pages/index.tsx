@@ -1,3 +1,217 @@
+// import React from "react";
+// import ActionCard from "@/components/ui/ActionCard";
+// import ActivityList from "@/components/ActivityList/ActivityList";
+// import {
+//   Carousel,
+//   CarouselContent,
+//   CarouselItem,
+//   CarouselPrevious,
+//   CarouselNext,
+//   type CarouselApi,
+// } from "@/components/ui/Carousel";
+// import { useApiQuery } from "@/hooks/useApiQuery";
+// import endpoints from "@/api/endpoints";
+
+// /* ─────────────────────────  MOCK DATA  ───────────────────────── */
+// const activities = [
+//   {
+//     id: "1",
+//     type: "share" as const,
+//     date: "Sep 18, 2023",
+//     reward: { amount: 50, status: "in-transit" as const },
+//   },
+//   {
+//     id: "2",
+//     type: "like" as const,
+//     date: "Aug 08, 2023",
+//     reward: { amount: 50, status: "success" as const },
+//   },
+//   {
+//     id: "3",
+//     type: "mention" as const,
+//     date: "Jul 22, 2023",
+//     reward: { amount: 50, status: "success" as const },
+//   },
+// ];
+
+// const actionCards = [
+//   {
+//     title: "Write Your First Post on X @Nigecoin",
+//     gradient: "greenBlue" as const,
+//     buttonText: "Get 50 coins",
+//     icon: <img src="/x.png" alt="X logo" className="w-28" />,
+//     action: "twitter-post",
+//   },
+
+//   {
+//     title: "Write Your First Post on X @StephySamavi",
+//     gradient: "greenBlue" as const,
+//     buttonText: "Get 25 coins",
+//     icon: <img src="/x.png" alt="Heart" className="w-32" />,
+//     action: "tag-post",
+//   },
+//   {
+//     title: "Simply like any recent @Nigecoin post to get rewarded.",
+//     gradient: "purplePink" as const,
+//     buttonText: "Get 10 coins",
+//     icon: <img src="/love.png" alt="Quote" className="h-full lg:w-40" />,
+//     action: "like-post",
+//   },
+//   {
+//     title: "Drop a genuine reply under @Nigecoin latest posts.",
+//     gradient: "purpleLavender" as const,
+//     buttonText: "Get 20 coin",
+//     icon: <img src="/Comments.png" alt="Reply" className="w-28" />,
+//     action: "reply-post",
+//   },
+
+//   {
+//     title:
+//       "Retweet any official @Nigecoin tweet to support the mission and earn coins.",
+//     gradient: "blueTeal" as const,
+//     buttonText: "Get 30 coins",
+//     icon: <img src="/retweet.png" alt="Retweet" className="w-28" />,
+//     action: "retweet-post",
+//   },
+//   {
+//     title: "Quote-tweet any @Nigecoin tweet to share your take.",
+//     gradient: "blueTeal" as const,
+//     buttonText: "Get 40 coins",
+//     icon: <img src="/quote.png" alt="Quote" className="w-28" />,
+//     action: "quote-post",
+//   },
+//   {
+//     title: "Add the hashtag #Nige in your posts to join the movement.",
+//     gradient: "tealblue" as const,
+//     buttonText: "Get 25 coins",
+//     icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
+//     action: "tag-post",
+//   },
+//   {
+//     title: "Add the hashtag #Nigent in your posts to join the movement.",
+//     gradient: "tealblue" as const,
+//     buttonText: "Get 20 coins",
+//     icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
+//     action: "tag-post",
+//   },
+//   {
+//     title: "Add the hashtag #NigeLink in your posts to join the movement.",
+//     gradient: "tealblue" as const,
+//     buttonText: "Get 20 coins",
+//     icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
+//     action: "tag-post",
+//   },
+//   {
+//     title: "Add the hashtag #NigeTrade in your posts to join the movement.",
+//     gradient: "tealblue" as const,
+//     buttonText: "Get 20 coins",
+//     icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
+//     action: "tag-post",
+//   },
+//   {
+//     title: "Add the hashtag #NigeLearn in your posts to join the movement.",
+//     gradient: "tealblue" as const,
+//     buttonText: "Get 20 coins",
+//     icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
+//     action: "tag-post",
+//   },
+//   {
+//     title: "Add the hashtag #NigeGlobal in your posts to join the movement.",
+//     gradient: "tealblue" as const,
+//     buttonText: "Get 20 coins",
+//     icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
+//     action: "tag-post",
+//   },
+//   {
+//     title: "Add the hashtag #Nigents in your posts to join the movement.",
+//     gradient: "tealblue" as const,
+//     buttonText: "Get 20 coins",
+//     icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
+//     action: "tag-post",
+//   },
+//   {
+//     title: "Add the hashtag #$Nige in your posts to join the movement.",
+//     gradient: "tealblue" as const,
+//     buttonText: "Get 25 coins",
+//     icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
+//     action: "tag-post",
+//   },
+// ];
+
+// /* ─────────────────────────  PAGE  ───────────────────────── */
+// const HomePage: React.FC = () => {
+//   const { data } = useApiQuery(endpoints.nigeEarn.rewards.list);
+//   console.log("data", data);
+//   const handleAction = () =>
+//     window.open("https://x.com/Nigecoin", "_blank", "noopener");
+
+//   /* capture Embla API to drive dot indicators */
+//   const [api, setApi] = React.useState<CarouselApi | null>(null);
+//   const [selectedIdx, setSelectedIdx] = React.useState(0);
+
+//   React.useEffect(() => {
+//     if (!api) return;
+//     const onSelect = () => setSelectedIdx(api.selectedScrollSnap());
+//     api.on("select", onSelect);
+//     onSelect();
+//     return () => {
+//       api.off("select", onSelect);
+//     };
+//   }, [api]);
+
+//   return (
+//     <div className="container mx-auto px-4 md:px-6">
+//       {/* ─────────────── ACTION CARDS CAROUSEL ─────────────── */}
+//       <div className="relative mb-8">
+//         <Carousel
+//           setApi={setApi}
+//           opts={{ align: "start", slidesToScroll: 1, loop: false }}
+//           className="w-full pb-2"
+//         >
+//           {/* LEFT / RIGHT BUTTONS */}
+//           <CarouselPrevious className="ml-8 xs:ml-7 z-10" />
+//           <CarouselNext className="mr-8 xs:mr-7 z-10" />
+
+//           <CarouselContent className="-ml-2 lg:-ml-4">
+//             {actionCards.map((card, idx) => (
+//               <CarouselItem
+//                 key={idx}
+//                 /* one card on mobile, two cards from lg up */
+//                 className="pl-6 pr-5 sm:pl-6 sm:pr-4 lg:pl-9 lg:pr-7 basis-full lg:basis-1/2"
+//               >
+//                 <ActionCard
+//                   title={card.title}
+//                   gradient={card.gradient}
+//                   buttonText={card.buttonText}
+//                   icon={card.icon}
+//                   onAction={handleAction}
+//                 />
+//               </CarouselItem>
+//             ))}
+//           </CarouselContent>
+//         </Carousel>
+
+//         {/* DOT INDICATORS */}
+//         <div className="absolute left-1/2 -bottom-2.5 -translate-x-1/2 flex gap-2">
+//           {actionCards.map((_, i) => (
+//             <span
+//               key={i}
+//               className={`h-1.5 w-1.5 rounded-full transition-colors  ${
+//                 i === selectedIdx ? "bg-gray-800" : "bg-gray-500/30"
+//               }`}
+//             />
+//           ))}
+//         </div>
+//       </div>
+
+//       {/* ─────────────── RECENT ACTIVITIES ─────────────── */}
+//       <ActivityList activities={activities} />
+//     </div>
+//   );
+// };
+
+// export default HomePage;
+// src/pages/index.tsx
 import React from "react";
 import ActionCard from "@/components/ui/ActionCard";
 import ActivityList from "@/components/ActivityList/ActivityList";
@@ -12,7 +226,23 @@ import {
 import { useApiQuery } from "@/hooks/useApiQuery";
 import endpoints from "@/api/endpoints";
 
-/* ─────────────────────────  MOCK DATA  ───────────────────────── */
+interface Mention {
+  tag: string;
+  reward: number;
+}
+interface Hashtag {
+  tag: string;
+  reward: number;
+}
+interface RewardsSettings {
+  likeReward: number;
+  repostReward: number;
+  quoteTweetReward: number;
+  replyReward: number;
+  mentions: Mention[];
+  hashtags: Hashtag[];
+}
+
 const activities = [
   {
     id: "1",
@@ -34,141 +264,88 @@ const activities = [
   },
 ];
 
-const actionCards = [
-  {
-    title: "Write Your First Post on X @Nigecoin",
-    gradient: "greenBlue" as const,
-    buttonText: "Get 50 coins",
-    icon: <img src="/x.png" alt="X logo" className="w-28" />,
-    action: "twitter-post",
-  },
-
-  {
-    title: "Write Your First Post on X @StephySamavi",
-    gradient: "greenBlue" as const,
-    buttonText: "Get 25 coins",
-    icon: <img src="/x.png" alt="Heart" className="w-32" />,
-    action: "tag-post",
-  },
-  {
-    title: "Simply like any recent @Nigecoin post to get rewarded.",
-    gradient: "purplePink" as const,
-    buttonText: "Get 10 coins",
-    icon: <img src="/love.png" alt="Quote" className="h-full lg:w-40" />,
-    action: "like-post",
-  },
-  {
-    title: "Drop a genuine reply under @Nigecoin latest posts.",
-    gradient: "purpleLavender" as const,
-    buttonText: "Get 20 coin",
-    icon: <img src="/Comments.png" alt="Reply" className="w-28" />,
-    action: "reply-post",
-  },
-
-  {
-    title:
-      "Retweet any official @Nigecoin tweet to support the mission and earn coins.",
-    gradient: "blueTeal" as const,
-    buttonText: "Get 30 coins",
-    icon: <img src="/retweet.png" alt="Retweet" className="w-28" />,
-    action: "retweet-post",
-  },
-  {
-    title: "Quote-tweet any @Nigecoin tweet to share your take.",
-    gradient: "blueTeal" as const,
-    buttonText: "Get 40 coins",
-    icon: <img src="/quote.png" alt="Quote" className="w-28" />,
-    action: "quote-post",
-  },
-  {
-    title: "Add the hashtag #Nige in your posts to join the movement.",
-    gradient: "tealblue" as const,
-    buttonText: "Get 25 coins",
-    icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
-    action: "tag-post",
-  },
-  {
-    title: "Add the hashtag #Nigent in your posts to join the movement.",
-    gradient: "tealblue" as const,
-    buttonText: "Get 20 coins",
-    icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
-    action: "tag-post",
-  },
-  {
-    title: "Add the hashtag #NigeLink in your posts to join the movement.",
-    gradient: "tealblue" as const,
-    buttonText: "Get 20 coins",
-    icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
-    action: "tag-post",
-  },
-  {
-    title: "Add the hashtag #NigeTrade in your posts to join the movement.",
-    gradient: "tealblue" as const,
-    buttonText: "Get 20 coins",
-    icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
-    action: "tag-post",
-  },
-  {
-    title: "Add the hashtag #NigeLearn in your posts to join the movement.",
-    gradient: "tealblue" as const,
-    buttonText: "Get 20 coins",
-    icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
-    action: "tag-post",
-  },
-  {
-    title: "Add the hashtag #NigeGlobal in your posts to join the movement.",
-    gradient: "tealblue" as const,
-    buttonText: "Get 20 coins",
-    icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
-    action: "tag-post",
-  },
-  {
-    title: "Add the hashtag #Nigents in your posts to join the movement.",
-    gradient: "tealblue" as const,
-    buttonText: "Get 20 coins",
-    icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
-    action: "tag-post",
-  },
-  {
-    title: "Add the hashtag #$Nige in your posts to join the movement.",
-    gradient: "tealblue" as const,
-    buttonText: "Get 25 coins",
-    icon: <img src="/hashtag.png" alt="Heart" className="w-32" />,
-    action: "tag-post",
-  },
-];
-
-/* ─────────────────────────  PAGE  ───────────────────────── */
 const HomePage: React.FC = () => {
   const { data } = useApiQuery(endpoints.nigeEarn.rewards.list);
   console.log("data", data);
+  const settings = (data?.data ?? data) as RewardsSettings | undefined;
+
   const handleAction = () =>
     window.open("https://x.com/Nigecoin", "_blank", "noopener");
 
-  /* capture Embla API to drive dot indicators */
+  // Build card list once settings are available
+  const actionCards = React.useMemo(() => {
+    if (!settings) return [];
+
+    const baseCards = [
+      {
+        title: "Simply like any recent @Nigecoin post to get rewarded.",
+        gradient: "purplePink" as const,
+        icon: <img src="/love.png" alt="Like" className="h-full lg:w-40" />,
+        reward: settings.likeReward,
+      },
+      {
+        title:
+          "Retweet any official @Nigecoin tweet to support the mission and earn coins.",
+        gradient: "tealblue" as const,
+        icon: <img src="/retweet.png" alt="Retweet" className="w-28" />,
+        reward: settings.repostReward,
+      },
+      {
+        title: "Quote-tweet any @Nigecoin tweet to share your take.",
+        gradient: "blueTeal" as const,
+        icon: <img src="/quote.png" alt="Quote" className="w-28" />,
+        reward: settings.quoteTweetReward,
+      },
+      {
+        title: "Drop a genuine reply under @Nigecoin latest posts.",
+        gradient: "purpleLavender" as const,
+        icon: <img src="/Comments.png" alt="Reply" className="w-28" />,
+        reward: settings.replyReward,
+      },
+    ];
+
+    const mentionCards = settings.mentions.map((m) => ({
+      title: `Write Your First Post on X @${m.tag}`,
+      gradient: "greenBlue" as const,
+      icon: <img src="/x.png" alt={`Mention @${m.tag}`} className="w-32" />,
+      reward: m.reward,
+    }));
+
+    const hashtagCards = settings.hashtags.map((h) => ({
+      title: `Add the hashtag #${h.tag} in your posts to join the movement.`,
+      gradient: "brownyellow" as const,
+      icon: <img src="/hashtag.png" alt={`#${h.tag}`} className="w-32" />,
+      reward: h.reward,
+    }));
+
+    // include only actions with a positive reward
+    return [...baseCards, ...mentionCards, ...hashtagCards].filter(
+      (c) => c.reward > 0
+    );
+  }, [settings]);
+
+  // Embla carousel state
   const [api, setApi] = React.useState<CarouselApi | null>(null);
   const [selectedIdx, setSelectedIdx] = React.useState(0);
-
   React.useEffect(() => {
     if (!api) return;
     const onSelect = () => setSelectedIdx(api.selectedScrollSnap());
-    api.on("select", onSelect); // update on scroll / button press
-    onSelect(); // initial
-    return () => {
-      api.off("select", onSelect);
-    };
+    api.on("select", onSelect);
+    onSelect();
+    return () => void api.off("select", onSelect);
   }, [api]);
+
+  if (!settings) return <div>Loading rewards…</div>;
 
   return (
     <div className="container mx-auto px-4 md:px-6">
-      {/* ─────────────── ACTION CARDS CAROUSEL ─────────────── */}
+      {/* ───── ACTION CARDS CAROUSEL ───── */}
       <div className="relative mb-8">
         <Carousel
           setApi={setApi}
           opts={{ align: "start", slidesToScroll: 1, loop: false }}
           className="w-full pb-2"
         >
-          {/* LEFT / RIGHT BUTTONS */}
           <CarouselPrevious className="ml-8 xs:ml-7 z-10" />
           <CarouselNext className="mr-8 xs:mr-7 z-10" />
 
@@ -176,13 +353,12 @@ const HomePage: React.FC = () => {
             {actionCards.map((card, idx) => (
               <CarouselItem
                 key={idx}
-                /* one card on mobile, two cards from lg up */
                 className="pl-6 pr-5 sm:pl-6 sm:pr-4 lg:pl-9 lg:pr-7 basis-full lg:basis-1/2"
               >
                 <ActionCard
                   title={card.title}
                   gradient={card.gradient}
-                  buttonText={card.buttonText}
+                  buttonText={`Get ${card.reward} coins`}
                   icon={card.icon}
                   onAction={handleAction}
                 />
@@ -196,7 +372,7 @@ const HomePage: React.FC = () => {
           {actionCards.map((_, i) => (
             <span
               key={i}
-              className={`h-1.5 w-1.5 rounded-full transition-colors  ${
+              className={`h-1.5 w-1.5 rounded-full transition-colors ${
                 i === selectedIdx ? "bg-gray-800" : "bg-gray-500/30"
               }`}
             />
@@ -204,7 +380,7 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* ─────────────── RECENT ACTIVITIES ─────────────── */}
+      {/* ───── RECENT ACTIVITIES ───── */}
       <ActivityList activities={activities} />
     </div>
   );

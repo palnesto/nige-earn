@@ -5,11 +5,11 @@ interface ActionCardProps {
   icon?: React.ReactNode;
   gradient?:
     | "greenBlue"
-    | "purpleRed"
     | "purplePink"
     | "purpleLavender"
     | "blueTeal"
-    | "tealblue";
+    | "tealblue"
+    | "brownyellow";
   buttonText: string;
   onAction: () => void;
 }
@@ -23,11 +23,11 @@ const ActionCard: React.FC<ActionCardProps> = ({
 }) => {
   const gradientClasses = {
     greenBlue: "bg-gradient-to-r from-green-500 to-blue-500",
-    purpleRed: "bg-gradient-to-r from-purple-800 to-pink-500",
     purplePink: "bg-gradient-to-r from-purple-600 to-pink-500",
     purpleLavender: "bg-gradient-to-r from-purple-800 to-purple-300",
-    blueTeal: "bg-gradient-to-r from-blue-700 to-teal-400",
-    tealblue: "bg-gradient-to-r from-green-500 to-blue-500",
+    blueTeal: "bg-gradient-to-r from-blue-700 to-[#E9737A]",
+    tealblue: "bg-gradient-to-r from-blue-500 to-green-500",
+    brownyellow: "bg-gradient-to-r from-[#6B2D20] to-[#D1C561]",
   };
 
   return (
