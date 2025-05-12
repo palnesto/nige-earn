@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Home, Trophy, Clock, Send, LogOut } from "lucide-react";
+import { Home, Trophy, Clock, Send, LogOut, Loader2 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -157,7 +157,11 @@ const DesktopNav = () => {
               logoutMutate({});
             }}
           >
-            <LogOut className="w-5 h-5" />
+            {isLogoutPending ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <LogOut className="w-5 h-5" />
+            )}
             <span>Logout</span>
           </button>
         </div>

@@ -12,12 +12,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="bg-[#00857F] h-[100dvh] flex flex-col items-center relative">
+    <div className="bg-[#00857F] h-[100dvh] flex flex-col items-center relative overflow-hidden">
       {/* Logo / hero */}
       <div className="flex-1 w-full flex flex-col items-center justify-between pt-12 relative">
         <div className="flex flex-col items-center gap-2">
           <img src="/eagle.png" alt="Nigearn" className="w-24" />
-          <span className="text-2xl font-bold text-white tracki">NigeEarn</span>
+          <span className="text-2xl xl:text-4xl font-bold text-white tracki">
+            NigeEarn
+          </span>
         </div>
 
         <div className="relative">
@@ -34,7 +36,7 @@ export default function LoginPage() {
       </div>
 
       {/* Auth box */}
-      <div className="w-full flex items-center justify-center relative fixed bottom-0">
+      <div className="w-full flex items-center justify-center relative   bottom-0">
         <div
           style={{
             background:
@@ -47,7 +49,7 @@ export default function LoginPage() {
           alt=""
           className="w-full h-full absolute object-cover hidden md:block"
         />
-        <div className="w-full md:w-96 bg-black rounded-t-[2.5rem] px-6 py-8 z-10 flex flex-col items-center ">
+        <div className="w-96 bg-black rounded-t-[2.5rem] px-6 py-8 z-10 flex flex-col items-center ">
           <h2 className="text-2xl font-bold text-white mb-3 text-center">
             Sign in for rewards
           </h2>
@@ -57,7 +59,7 @@ export default function LoginPage() {
 
           <Button
             variant="yellow"
-            className="mb-4 gap-2 w-96 md:w-full"
+            className="mb-4 gap-2 w-full md:w-full"
             onClick={handleContinueWithX}
           >
             Continue with&nbsp;

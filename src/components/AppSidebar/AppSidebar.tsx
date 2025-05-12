@@ -1,4 +1,4 @@
-import { LogOut, Send } from "lucide-react";
+import { LogOut, Send, Loader2 } from "lucide-react";
 
 import {
   Sidebar,
@@ -63,7 +63,11 @@ export function AppSidebar() {
                   }}
                   className="gap-3 p-2 hover:text-red-500 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30 flex items-center justify-around w-32"
                 >
-                  <LogOut />
+                  {isLogoutPending ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <LogOut className="w-5 h-5" />
+                  )}
                   <span className="text-lg">Logout</span>
                 </button>
               </SidebarMenuButton>
