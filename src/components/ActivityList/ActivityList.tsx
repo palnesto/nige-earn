@@ -1,14 +1,17 @@
-import { useState } from "react";
-import { useApiQuery } from "@/hooks/useApiQuery";
+// src/pages/ActivityList.tsx
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import ActivityItem from "./ActivityItem";
-import endpoints from "@/api/endpoints";
 import { Paginator } from "@/components/ui/Pagination";
+import endpoints from "@/api/endpoints";
+import apiInstance from "@/api/queryClient";
 
 interface RawActivity {
   _id: string;
   amount: number;
-  meta: {
-    type: "like" | "retweet" | "quote" | "mention" | "hashtag" | "reply";
+  meta?: {
+    type?: "like" | "retweet" | "quote" | "mention" | "hashtag" | "reply";
     tweetId?: string;
     originalTweetId?: string;
     quoteTweetId?: string;
@@ -17,61 +20,85 @@ interface RawActivity {
     tweetCreatedAt?: string;
     replyCreatedAt?: string;
   };
-  createdAt: string;
+  createdAt?: string;
 }
 
-interface ApiResponse {
+interface Meta {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+interface PagedResponse<T> {
   statusCode: number;
-  data: RawActivity[];
-  message: string;
-  success: boolean;
+  data?: {
+    entries?: T[];
+    meta?: Meta;
+  };
+  message?: string;
+  success?: boolean;
 }
 
-const ActivityList: React.FC = () => {
-  const { data, isLoading, isError } = useApiQuery<ApiResponse>(
-    endpoints.nigeEarn.activities
-  );
+export const ActivityList: React.FC = () => {
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
-  if (isLoading) return <div>Loading…</div>;
-  if (isError || !data) return <div>Error</div>;
+  const {
+    data: paged,
+    isLoading,
+    isError,
+    isFetching,
+  } = useQuery<PagedResponse<RawActivity>, Error>({
+    queryKey: ["activities", page],
+    queryFn: () =>
+      apiInstance
+        .get<PagedResponse<RawActivity>>(
+          `/nige-earn${endpoints.nigeEarn.activities}`,
+          {
+            params: { page, pageSize },
+          }
+        )
+        .then((res) => res.data),
+    placeholderData: (prev) => prev,
+  });
 
-  const all = data.data;
-  const pageCount = Math.ceil(all.length / pageSize);
-  const slice = all.slice((page - 1) * pageSize, page * pageSize);
+  if (isLoading) return <div>Loading…</div>;
+  if (isError || !paged?.data) return <div>Error loading activities</div>;
+
+  // Safe destructuring with defaults
+  const entries = paged.data.entries ?? [];
+  const meta = paged.data.meta ?? {
+    total: 0,
+    page,
+    pageSize,
+    totalPages: 0,
+  };
 
   const base = "https://twitter.com/i/web/status/";
   const getDetails = (act: RawActivity) => {
-    const link = (
-      act.meta.type === "quote"
-        ? act.meta.quoteTweetId
-        : act.meta.type === "reply"
-        ? act.meta.replyId
-        : act.meta.tweetId
-    )
-      ? base +
-        (act.meta.type === "quote"
-          ? act.meta.quoteTweetId
-          : act.meta.type === "reply"
-          ? act.meta.replyId
-          : act.meta.tweetId)
-      : undefined;
+    const type = act.meta?.type;
+    const id =
+      type === "quote"
+        ? act.meta?.quoteTweetId
+        : type === "reply"
+        ? act.meta?.replyId
+        : act.meta?.tweetId;
+    const link = id ? base + id : undefined;
 
-    switch (act.meta.type) {
+    switch (type) {
       case "like":
         return {
           icon: <img src="/love.png" alt="Like" className="h-7 w-7" />,
           label: "You liked a post",
           description: link ? (
-            <p className="text-[0.55rem] sm:text-xs text-gray-600">
-              You liked an official NIGE tweet.
-              <br className="xs:hidden" />
+            <p className="text-xs text-gray-600">
+              You liked an official NIGE tweet.{" "}
               <a
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-600 border px-1 sm:px-2 py-1 rounded-md"
+                className="font-medium text-blue-600 border px-2 py-1 rounded-md"
               >
                 View Tweet
               </a>
@@ -84,13 +111,13 @@ const ActivityList: React.FC = () => {
           icon: <img src="/retweet.png" alt="Retweet" className="h-7 w-7" />,
           label: "You retweeted a post",
           description: link ? (
-            <p className="text-[0.55rem] sm:text-xs text-gray-600">
-              You retweeted an official NIGE tweet. <br className="xs:hidden" />
+            <p className="text-xs text-gray-600">
+              You retweeted an official NIGE tweet.{" "}
               <a
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-600 border px-1 sm:px-2 py-1 rounded-md"
+                className="font-medium text-blue-600 border px-2 py-1 rounded-md"
               >
                 View Tweet
               </a>
@@ -100,17 +127,16 @@ const ActivityList: React.FC = () => {
         };
       case "quote":
         return {
-          icon: <img src="/quote.png" alt="Quote" className="w-7 h-7" />,
+          icon: <img src="/quote.png" alt="Quote" className="h-7 w-7" />,
           label: "You quote tweeted",
           description: link ? (
-            <p className="text-gray-600 text-[0.55rem] sm:text-xs space-x-1 space-y-1">
-              You quote tweeted an official NIGE tweet.
-              <br className="xs:hidden" />
+            <p className="text-xs text-gray-600">
+              You quote tweeted an official NIGE tweet.{" "}
               <a
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-600 border px-1 sm:px-2 py-1 rounded-md"
+                className="font-medium text-blue-600 border px-2 py-1 rounded-md"
               >
                 View Tweet
               </a>
@@ -123,14 +149,13 @@ const ActivityList: React.FC = () => {
           icon: <img src="/at.png" alt="Mention" className="h-7 w-7" />,
           label: `You mentioned @Nigecoin`,
           description: link ? (
-            <p className="text-[0.55rem] sm:text-xs text-gray-600">
+            <p className="text-xs text-gray-600">
               You mentioned @Nigecoin in an official NIGE tweet.{" "}
-              <br className="xs:hidden" />
               <a
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-600 border px-1 sm:px-2 py-1 rounded-md"
+                className="font-medium text-blue-600 border px-2 py-1 rounded-md"
               >
                 View Tweet
               </a>
@@ -140,17 +165,16 @@ const ActivityList: React.FC = () => {
         };
       case "hashtag":
         return {
-          icon: <img src="/hashtag.png" alt="Hashtag" className="w-7 h-7" />,
-          label: `You used #${act.meta.tag}`,
+          icon: <img src="/hashtag.png" alt="Hashtag" className="h-7 w-7" />,
+          label: `You used #${act.meta?.tag}`,
           description: link ? (
-            <p className="text-[0.55rem] sm:text-xs text-gray-600">
-              You used #{act.meta.tag} in an official NIGE tweet.{" "}
-              <br className="xs:hidden" />
+            <p className="text-xs text-gray-600">
+              You used #{act.meta?.tag} in an official NIGE tweet.{" "}
               <a
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-600 border px-1 sm:px-2 py-1 rounded-md"
+                className="font-medium text-blue-600 border px-2 py-1 rounded-md"
               >
                 View Tweet
               </a>
@@ -160,23 +184,29 @@ const ActivityList: React.FC = () => {
         };
       case "reply":
         return {
-          icon: <img src="/Comments.png" alt="Reply" className="w-7 h-7" />,
+          icon: <img src="/Comments.png" alt="Reply" className="h-7 w-7" />,
           label: "You replied to a post",
           description: link ? (
-            <p className="text-[0.55rem] sm:text-xs text-gray-600">
+            <p className="text-xs text-gray-600">
               You replied to an official NIGE tweet.{" "}
-              <br className="xs:hidden" />
               <a
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-600 border px-1 sm:px-2 py-1 rounded-md"
+                className="font-medium text-blue-600 border px-2 py-1 rounded-md"
               >
                 View Tweet
               </a>
             </p>
           ) : null,
           cardClass: "bg-indigo-50 border-l-4 border-indigo-300",
+        };
+      default:
+        return {
+          icon: null,
+          label: "",
+          description: null,
+          cardClass: "",
         };
     }
   };
@@ -187,9 +217,11 @@ const ActivityList: React.FC = () => {
         Kindly note that your points will be updated and reflected in your
         account within a few hours.
       </div>
+
       <h2 className="text-xl font-bold mb-4">Recent Activities</h2>
+
       <div className="space-y-5">
-        {slice.map((act) => {
+        {entries.map((act) => {
           const { icon, label, description, cardClass } = getDetails(act);
           return (
             <ActivityItem
@@ -204,13 +236,20 @@ const ActivityList: React.FC = () => {
           );
         })}
       </div>
+
       <div className="mt-6 flex justify-center">
         <Paginator
-          currentPage={page}
-          totalPages={pageCount}
+          currentPage={meta.page}
+          totalPages={meta.totalPages}
           onPageChange={setPage}
         />
       </div>
+
+      {isFetching && (
+        <div className="text-center py-2 text-sm text-gray-500">
+          Loading page {page + 1}…
+        </div>
+      )}
     </div>
   );
 };
