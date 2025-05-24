@@ -1,15 +1,16 @@
 import { Button } from "@/components/ui/button";
+import { LoginAsType, ROLES } from "@/constants";
 
 export default function LoginPage() {
-  const handleContinueWithX = () => {
-    const BACKEND = import.meta.env.VITE_BACKEND_URL;
-    const returnTo = import.meta.env.VITE_CLIENT_URL;
-
-    // Updated → `/auth/start/nige-earn`
-    window.location.href = `${BACKEND}/auth/start/nige-earn?returnTo=${encodeURIComponent(
-      returnTo
-    )}`;
-  };
+  const handleContinueWithX =
+    (loginAs: LoginAsType, appReturnTo?: string) => () => {
+      const BACKEND = import.meta.env.VITE_BACKEND_URL;
+      const returnTo = appReturnTo ?? import.meta.env.VITE_CLIENT_URL;
+      console.log("built retrurnTo", returnTo);
+      window.location.href = `${BACKEND}/auth/start/nige-earn?returnTo=${encodeURIComponent(
+        returnTo
+      )}&loginAs=${encodeURIComponent(loginAs)}`;
+    };
 
   return (
     <div className="bg-[#00857F] h-[100dvh] flex flex-col items-center relative overflow-hidden">
@@ -60,7 +61,10 @@ export default function LoginPage() {
           <Button
             variant="yellow"
             className="mb-4 gap-2 w-full md:w-full"
-            onClick={handleContinueWithX}
+            onClick={handleContinueWithX(
+              ROLES.NIGE_EARN_USER,
+              `${import.meta.env.VITE_CLIENT_URL}`
+            )}
           >
             Continue with&nbsp;
             <img src="/twitter.png" alt="twitter" className="w-4 h-4" />
@@ -69,7 +73,10 @@ export default function LoginPage() {
           <div className="text-white text-center mt-4">
             Already have an account?{" "}
             <button
-              onClick={handleContinueWithX}
+              onClick={handleContinueWithX(
+                ROLES.NIGE_EARN_USER,
+                `${import.meta.env.VITE_CLIENT_URL}`
+              )}
               className="text-lime-400 font-medium"
             >
               Log&nbsp;in
