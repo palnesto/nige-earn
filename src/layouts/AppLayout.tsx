@@ -15,38 +15,9 @@ import endpoints from "@/api/endpoints";
 import toast from "react-hot-toast";
 
 const AppLayout = ({ children }: { children: ReactNode }) => {
-  const user = useAuthStore((s) => s.user);
-  console.log("user", user);
-
   return (
     <SidebarProvider>
-      {/* <div className="flex min-h-screen bg-gray-50">
-        
-        <Sidebar />
-
-        
-        <div className="fixed top-0 left-0 right-0 bg-white z-10 md:left-64 px-4 py-3">
-          <UserProfile
-            name={user?.profile?.username ?? "default"}
-            coinBalance={user?.account?.balance ?? "null"}
-            // profileImage="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100"
-            notifications={3}
-          />
-        </div>
-
-       
-        <div className="flex-1 md:ml-64 relative">
-          <div className="h-screen overflow-y-auto pt-20 pb-20 md:pb-6">
-            <div className="max-w-full overflow-x-hidden">{children}</div>
-          </div>
-        </div>
-
-        
-        <MobileNav />
-      </div> */}
-
       {/* new */}
-
       <div className="w-full max-h-[100dvh] min-h-[100dvh] h-[100dvh] overflow-hidden flex flex-col-reverse md:flex-row">
         <div className="h-full w-full md:basis-auto md:max-w-64 md:w-64 md:min-w-64">
           {/* ← Mobile drawer lives here */}
@@ -186,7 +157,6 @@ const MobileNav = () => {
           Home
         </span>
       </Link>
-
       <Link
         to="/leader-board"
         className={`flex flex-col items-center justify-center ${
@@ -200,23 +170,9 @@ const MobileNav = () => {
           Leader Board
         </span>
       </Link>
-
-      {/* <Link
-        to="/profile"
-        className={`flex flex-col items-center justify-center ${
-          path === "/profile" ? "text-teal-600" : "text-gray-500"
-        }`}
-      > */}
-      {/* <User size={24} />
-        <span className={`text-xs mt-1 ${path === "/profile" ? "" : "hidden"}`}>
-          Profile
-        </span> */}
       <SidebarTrigger>
-        <Button variant="ghost" size="icon" className="md:hidden">
-          {/* <User size={28} /> */}
-        </Button>
+        <Button variant="ghost" size="icon" className="md:hidden"></Button>
       </SidebarTrigger>
-      {/* </Link> */}
     </div>
   );
 };
@@ -238,7 +194,6 @@ const Main = ({ children }: { children: ReactNode }) => {
 
 const MainHead = () => {
   const user = useAuthStore((s) => s.user);
-  console.log("user", user);
   return (
     <div className="h-full w-full px-6 flex justify-between items-end pb-3">
       <div className="flex flex-col">
@@ -256,21 +211,6 @@ const MainHead = () => {
           <img src="/nigecoin.gif" alt="Coin" className="w-14 sm:w-16" />
         </div>
 
-        {/* <div className="relative">
-          <img
-            src={profileImage}
-            alt={name}
-            className="w-8 h-8 rounded-full object-cover"
-          />
-        </div> */}
-
-        {/* <div className="relative">
-          <img src="/Bell.png" className="w-8" />
-
-          <span className="absolute -top-1 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-            {"0"}
-          </span>
-        </div> */}
         <Popover>
           <PopoverTrigger asChild>
             <button className="relative" aria-label="Notifications">

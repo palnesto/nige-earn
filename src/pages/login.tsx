@@ -6,7 +6,6 @@ export default function LoginPage() {
     (loginAs: LoginAsType, appReturnTo?: string) => () => {
       const BACKEND = import.meta.env.VITE_BACKEND_URL;
       const returnTo = appReturnTo ?? import.meta.env.VITE_CLIENT_URL;
-      console.log("built retrurnTo", returnTo);
       window.location.href = `${BACKEND}/auth/start/nige-earn?returnTo=${encodeURIComponent(
         returnTo
       )}&loginAs=${encodeURIComponent(loginAs)}`;
