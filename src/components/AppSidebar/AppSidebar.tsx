@@ -34,7 +34,7 @@ export function AppSidebar() {
         <SidebarGroupContent>
           <div className="h-40 min-h-40 max-h-40 shrink-0 pb-5">
             <div className="p-6 flex flex-col items-center justify-center h-full">
-              <img src="/eagle.png" alt="Eagle icon" className="h-32" />
+              <img src=" /eagle2.png" alt="Eagle icon" className="h-32" />
               <span className="text-4xl tracking-wider font-bold text-white">
                 NigeEarn
               </span>

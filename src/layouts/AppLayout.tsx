@@ -59,7 +59,7 @@ const DesktopNav = () => {
     <div className="bg-[#00857F] w-full min-h-[100dvh] max-h-[100dvh] flex flex-col">
       <div className="h-40 min-h-40 max-h-40 shrink-0">
         <div className="p-6 flex items-center justify-center h-full">
-          <img src="/eagle.png" alt="Eagle icon" className="h-12" />
+          <img src=" /eagle2.png" alt="Eagle icon" className="h-12" />
           <span className="text-2xl font-bold text-white">NigeEarn</span>
         </div>
       </div>
