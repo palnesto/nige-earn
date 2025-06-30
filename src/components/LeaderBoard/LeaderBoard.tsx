@@ -3,6 +3,10 @@ import LeaderBoardItem from "./LeaderBoardItem";
 import endpoints from "@/api/endpoints";
 import { useMemo, useState } from "react";
 import { QueryParams } from "@/api/endpoints/nige-earn";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 interface Entry {
   rank: number;
@@ -44,13 +48,14 @@ const LeaderBoard: React.FC = () => {
   const topTen = entries.filter((e) => e?.rank <= 10);
   const me = entries.find((e) => e?.isCurrentUser);
   const displayList = me && me?.rank > 10 ? [...topTen, me] : topTen;
-
+  const nowUtc = dayjs().utc();
+  const label = nowUtc.format("MMMM YYYY").toUpperCase();
   return (
     <div className="p-4">
       <div className="pb-6">
         <img src="/leader.jpeg" alt="leader" className="w-full" />
       </div>
-      <div className="text-center mb-5 text-xl font-bold">JUNE 2025</div>
+      <div className="text-center mb-5 text-xl font-bold">{label}</div>
       <div className="space-y-2">
         {displayList?.map((e) => (
           <LeaderBoardItem
