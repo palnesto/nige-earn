@@ -1,6 +1,8 @@
 import { useApiQuery } from "@/hooks/useApiQuery";
 import LeaderBoardItem from "./LeaderBoardItem";
 import endpoints from "@/api/endpoints";
+import { useMemo, useState } from "react";
+import { QueryParams } from "@/api/endpoints/nige-earn";
 
 interface Entry {
   rank: number;
@@ -19,9 +21,13 @@ interface ApiResponse {
 }
 
 const LeaderBoard: React.FC = () => {
-  const { data, isLoading, isError } = useApiQuery<ApiResponse>(
-    endpoints.nigeEarn.leaderboard
+  const [queryParams] = useState<QueryParams>({
+    monthly: true,
+  });
+  const { data, isLoading, isError } = useApiQuery(
+    endpoints.nigeEarn.leaderboard({ queryParams })
   );
+  const entries = useMemo(() => data?.data?.leaderboard || [], [data]);
 
   if (isLoading) {
     return (
@@ -35,10 +41,9 @@ const LeaderBoard: React.FC = () => {
     return <div className="p-4 text-red-500">Failed to load leaderboard.</div>;
   }
 
-  const entries = data.data;
-  const topTen = entries.filter((e) => e.rank <= 10);
-  const me = entries.find((e) => e.isCurrentUser);
-  const displayList = me && me.rank > 10 ? [...topTen, me] : topTen;
+  const topTen = entries.filter((e) => e?.rank <= 10);
+  const me = entries.find((e) => e?.isCurrentUser);
+  const displayList = me && me?.rank > 10 ? [...topTen, me] : topTen;
 
   return (
     <div className="p-4">
@@ -46,14 +51,14 @@ const LeaderBoard: React.FC = () => {
         <img src="/leader.jpeg" alt="leader" className="w-full" />
       </div>
       <div className="space-y-2">
-        {displayList.map((e) => (
+        {displayList?.map((e) => (
           <LeaderBoardItem
-            key={e.accountId}
-            rank={e.rank}
-            name={e.twitterHandle}
-            avatarUrl={e.avatarUrl}
-            coins={e.balance}
-            isCurrentUser={e.isCurrentUser}
+            key={e?.accountId}
+            rank={e?.rank}
+            name={e?.twitterHandle}
+            avatarUrl={e?.avatarUrl}
+            coins={e?.balance}
+            isCurrentUser={e?.isCurrentUser}
           />
         ))}
       </div>
