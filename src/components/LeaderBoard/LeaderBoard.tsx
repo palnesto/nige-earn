@@ -26,7 +26,7 @@ interface ApiResponse {
 
 const LeaderBoard: React.FC = () => {
   const [queryParams] = useState<QueryParams>({
-    monthly: true,
+    // monthly: true,
   });
   const { data, isLoading, isError } = useApiQuery(
     endpoints.nigeEarn.leaderboard({ queryParams })
@@ -63,7 +63,7 @@ const LeaderBoard: React.FC = () => {
             rank={e?.rank}
             name={e?.twitterHandle}
             avatarUrl={e?.avatarUrl}
-            coins={e?.totalCoins}
+            coins={e?.totalCoins ?? e?.balance}
             isCurrentUser={e?.isCurrentUser}
           />
         ))}
