@@ -55,7 +55,7 @@ const LeaderBoard: React.FC = () => {
       <div className="pb-6">
         <img src="/leader.jpeg" alt="leader" className="w-full" />
       </div>
-      <div className="text-center mb-5 text-xl font-bold">{label}</div>
+      {/* <div className="text-center mb-5 text-xl font-bold">{label}</div> */}
       <div className="space-y-2">
         {displayList?.map((e) => (
           <LeaderBoardItem
