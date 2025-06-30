@@ -58,7 +58,7 @@ const LeaderBoard: React.FC = () => {
             rank={e?.rank}
             name={e?.twitterHandle}
             avatarUrl={e?.avatarUrl}
-            coins={e?.balance}
+            coins={e?.totalCoins}
             isCurrentUser={e?.isCurrentUser}
           />
         ))}
