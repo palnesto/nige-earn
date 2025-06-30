@@ -5,31 +5,17 @@ import { useMemo, useState } from "react";
 import { QueryParams } from "@/api/endpoints/nige-earn";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
 dayjs.extend(utc);
-
-interface Entry {
-  rank: number;
-  accountId: string;
-  balance: number;
-  twitterHandle: string;
-  avatarUrl: string;
-  isCurrentUser: boolean;
-}
-
-interface ApiResponse {
-  statusCode: number;
-  data: Entry[];
-  message: string;
-  success: boolean;
-}
+dayjs.extend(timezone);
 
 const LeaderBoard: React.FC = () => {
-  const [queryParams] = useState<QueryParams>({
-    // monthly: true,
-  });
+  const [queryParams] = useState<QueryParams>({});
   const { data, isLoading, isError } = useApiQuery(
-    endpoints.nigeEarn.leaderboard({ queryParams })
+    endpoints.nigeEarn.leaderboard({
+      queryParams: { monthly: true },
+    })
   );
   const entries = useMemo(() => data?.data?.leaderboard || [], [data]);
 
@@ -45,26 +31,29 @@ const LeaderBoard: React.FC = () => {
     return <div className="p-4 text-red-500">Failed to load leaderboard.</div>;
   }
 
-  const topTen = entries.filter((e) => e?.rank <= 10);
-  const me = entries.find((e) => e?.isCurrentUser);
-  const displayList = me && me?.rank > 10 ? [...topTen, me] : topTen;
-  const nowUtc = dayjs().utc();
-  const label = nowUtc.format("MMMM YYYY").toUpperCase();
+  const topTen = entries.filter((e) => e.rank <= 10);
+  const me = entries.find((e) => e.isCurrentUser);
+  const displayList = me && me.rank > 10 ? [...topTen, me] : topTen;
+
+  // **Always use Madrid time** for the label:
+  const nowMadrid = dayjs().tz("Europe/Madrid");
+  const label = nowMadrid.format("MMMM YYYY").toUpperCase();
+
   return (
     <div className="p-4">
       <div className="pb-6">
         <img src="/leader.jpeg" alt="leader" className="w-full" />
       </div>
-      {/* <div className="text-center mb-5 text-xl font-bold">{label}</div> */}
+      <div className="text-center mb-5 text-xl font-bold">{label}</div>
       <div className="space-y-2">
-        {displayList?.map((e) => (
+        {displayList.map((e) => (
           <LeaderBoardItem
-            key={e?.accountId}
-            rank={e?.rank}
-            name={e?.twitterHandle}
-            avatarUrl={e?.avatarUrl}
-            coins={e?.totalCoins ?? e?.balance}
-            isCurrentUser={e?.isCurrentUser}
+            key={e.accountId}
+            rank={e.rank}
+            name={e.twitterHandle}
+            avatarUrl={e.avatarUrl}
+            coins={e.balance}
+            isCurrentUser={e.isCurrentUser}
           />
         ))}
       </div>
