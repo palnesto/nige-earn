@@ -1,8 +1,7 @@
 import { useApiQuery } from "@/hooks/useApiQuery";
 import LeaderBoardItem from "./LeaderBoardItem";
 import endpoints from "@/api/endpoints";
-import { useMemo, useState } from "react";
-import { QueryParams } from "@/api/endpoints/nige-earn";
+import { useMemo } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -10,8 +9,7 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const LeaderBoard: React.FC = () => {
-  const [queryParams] = useState<QueryParams>({});
+const LeaderBoard = () => {
   const { data, isLoading, isError } = useApiQuery(
     endpoints.nigeEarn.leaderboard({
       queryParams: { monthly: true },

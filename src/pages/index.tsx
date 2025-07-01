@@ -50,7 +50,7 @@ const activities = [
   },
 ];
 
-const HomePage: React.FC = () => {
+const HomePage = () => {
   const { data } = useApiQuery(endpoints.nigeEarn.rewards.list);
   const settings = (data?.data ?? data) as RewardsSettings | undefined;
   const mentions = settings?.mentions ?? [];
