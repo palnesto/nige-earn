@@ -91,7 +91,7 @@ const HomePage: React.FC = () => {
 
     const baseCards = mentionTags?.map(baseCardsGenerator)?.flat();
 
-    const mentionCards = settings.mentions.map((m) => ({
+    const mentionCards = settings?.mentions?.map((m) => ({
       title: `Write Your First Post on X @${m.tag}`,
       gradient: "greenBlue" as const,
       icon: <img src="/x.png" alt={`Mention @${m.tag}`} className="w-32" />,
