@@ -28,7 +28,7 @@ export function AppSidebar() {
     },
   });
   return (
-    <Sidebar side="right" className="md:hidden w- flex flex-col h-full">
+    <Sidebar side="right" className="md:hidden flex flex-col h-full">
       {/* Support & Logout actions at bottom */}
       <SidebarGroup className="flex-1 flex flex-col justify-between pt-20">
         <SidebarGroupContent>

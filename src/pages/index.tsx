@@ -56,7 +56,7 @@ const HomePage: React.FC = () => {
   const mentions = settings?.mentions ?? [];
   const mentionTags = mentions?.map((m) => m.tag) ?? [];
   const handleAction = () =>
-    window.open("https://x.com/Nigecoin", "_blank", "noopener");
+    window.open("https://x.com/NigeNest", "_blank", "noopener");
 
   // Build card list once settings are available
   const actionCards = React.useMemo(() => {
