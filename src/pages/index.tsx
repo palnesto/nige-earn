@@ -53,7 +53,8 @@ const activities = [
 const HomePage: React.FC = () => {
   const { data } = useApiQuery(endpoints.nigeEarn.rewards.list);
   const settings = (data?.data ?? data) as RewardsSettings | undefined;
-
+  const mentions = settings?.mentions ?? [];
+  const mentionTags = mentions?.map((m) => m.tag) ?? [];
   const handleAction = () =>
     window.open("https://x.com/Nigecoin", "_blank", "noopener");
 
@@ -61,33 +62,34 @@ const HomePage: React.FC = () => {
   const actionCards = React.useMemo(() => {
     if (!settings) return [];
 
-    const baseCards = [
+    const baseCardsGenerator = (tag: string) => [
       {
-        title: "Simply like any recent @Nigecoin post to get rewarded.",
+        title: `Simply like any recent @${tag} post to get rewarded.`,
         gradient: "purplePink" as const,
         icon: <img src="/love.png" alt="Like" className="h-full lg:w-40" />,
         reward: settings.likeReward,
       },
       {
-        title:
-          "Retweet any official @Nigecoin tweet to support the mission and earn coins.",
+        title: `Retweet any official @${tag} tweet to support the mission and earn coins.`,
         gradient: "tealblue" as const,
         icon: <img src="/retweet.png" alt="Retweet" className="w-28" />,
         reward: settings.repostReward,
       },
       {
-        title: "Quote-tweet any @Nigecoin tweet to share your take.",
+        title: `Quote-tweet any @${tag} tweet to share your take.`,
         gradient: "blueTeal" as const,
         icon: <img src="/quote.png" alt="Quote" className="w-28" />,
         reward: settings.quoteTweetReward,
       },
       {
-        title: "Drop a genuine reply under @Nigecoin latest posts.",
+        title: `Drop a genuine reply under @${tag} latest posts.`,
         gradient: "purpleLavender" as const,
         icon: <img src="/Comments.png" alt="Reply" className="w-28" />,
         reward: settings.replyReward,
       },
     ];
+
+    const baseCards = mentionTags?.map(baseCardsGenerator)?.flat();
 
     const mentionCards = settings.mentions.map((m) => ({
       title: `Write Your First Post on X @${m.tag}`,
@@ -102,8 +104,6 @@ const HomePage: React.FC = () => {
       icon: <img src="/hashtag.png" alt={`#${h.tag}`} className="w-32" />,
       reward: h.reward,
     }));
-
-    // include only actions with a positive reward
     return [...baseCards, ...mentionCards, ...hashtagCards].filter(
       (c) => c.reward > 0
     );
