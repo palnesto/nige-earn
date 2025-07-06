@@ -1,7 +1,6 @@
 // src/pages/ActivityList.tsx
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import ActivityItem from "./ActivityItem";
 import { Paginator } from "@/components/ui/Pagination";
 import endpoints from "@/api/endpoints";
@@ -147,10 +146,10 @@ export const ActivityList: React.FC = () => {
       case "mention":
         return {
           icon: <img src="/at.png" alt="Mention" className="h-7 w-7" />,
-          label: `You mentioned @Nigecoin`,
+          label: `You mentioned @${act.meta?.tag}`,
           description: link ? (
             <p className="text-xs text-gray-600">
-              You mentioned @Nigecoin in an official NIGE tweet.{" "}
+              You mentioned @{act.meta?.tag} in an official NIGE tweet.{" "}
               <a
                 href={link}
                 target="_blank"
